@@ -2,7 +2,7 @@
 	"name": "NYCTripSimpleQuery",
 	"properties": {
 		"content": {
-			"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://pocioblake.dfs.core.windows.net/pociobprimaryfs/NYCTripSmall.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]",
+			"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://pocioblake.dfs.core.windows.net/pociobprimaryfs/NYCTripSmall.parquet',\n        FORMAT='PARQUET' \n    ) AS [result]",
 			"metadata": {
 				"language": "sql"
 			},
