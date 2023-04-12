@@ -1,0 +1,1578 @@
+{
+	"name": "cpySalesForceCampaign",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy1_pociobprimaryfs_Campaign_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "Campaign"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//Campaign.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"query": {
+							"value": "select * from \"Campaign\" \nwhere \"LastModifiedDate\" >= {ts'@{formatDateTime(pipeline().parameters.windowStart, 'yyyy-MM-dd HH:mm:ss' )}'} \nAND \"LastModifiedDate\" < {ts'@{formatDateTime(pipeline().parameters.windowEnd, 'yyyy-MM-dd HH:mm:ss' )}'}",
+							"type": "Expression"
+						},
+						"readBehavior": "queryAll"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "Campaign"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "Campaign.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy2_pociobprimaryfs_CampaignChangeEvent_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "CampaignChangeEvent"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//CampaignChangeEvent.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "CampaignChangeEvent"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "CampaignChangeEvent.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy3_pociobprimaryfs_CampaignFeed_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "CampaignFeed"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//CampaignFeed.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "CampaignFeed"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "CampaignFeed.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy4_pociobprimaryfs_CampaignHistory_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "CampaignHistory"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//CampaignHistory.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "CampaignHistory"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "CampaignHistory.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy5_pociobprimaryfs_CampaignMember_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "CampaignMember"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//CampaignMember.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "CampaignMember"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "CampaignMember.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy6_pociobprimaryfs_CampaignMemberChangeEvent_cs",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "CampaignMemberChangeEvent"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//CampaignMemberChangeEvent.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "CampaignMemberChangeEvent"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "CampaignMemberChangeEvent.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy7_pociobprimaryfs_CampaignMemberStatus_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "CampaignMemberStatus"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//CampaignMemberStatus.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "CampaignMemberStatus"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "CampaignMemberStatus.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy8_pociobprimaryfs_CampaignMemberStatusChangeEv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "CampaignMemberStatusChangeEvent"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//CampaignMemberStatusChangeEvent.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "CampaignMemberStatusChangeEvent"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "CampaignMemberStatusChangeEvent.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy9_pociobprimaryfs_CampaignShare_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "CampaignShare"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//CampaignShare.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "CampaignShare"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "CampaignShare.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy10_pociobprimaryfs_Order_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "Order"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//Order.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "Order"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "Order.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy11_pociobprimaryfs_OrderChangeEvent_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "OrderChangeEvent"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//OrderChangeEvent.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "OrderChangeEvent"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "OrderChangeEvent.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy12_pociobprimaryfs_OrderFeed_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "OrderFeed"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//OrderFeed.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "OrderFeed"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "OrderFeed.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy13_pociobprimaryfs_OrderHistory_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "OrderHistory"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//OrderHistory.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "OrderHistory"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "OrderHistory.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy14_pociobprimaryfs_OrderItem_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "OrderItem"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//OrderItem.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "OrderItem"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "OrderItem.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy15_pociobprimaryfs_OrderItemChangeEvent_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "OrderItemChangeEvent"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//OrderItemChangeEvent.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "OrderItemChangeEvent"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "OrderItemChangeEvent.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy16_pociobprimaryfs_OrderItemFeed_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "OrderItemFeed"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//OrderItemFeed.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "OrderItemFeed"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "OrderItemFeed.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy17_pociobprimaryfs_OrderItemHistory_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "OrderItemHistory"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//OrderItemHistory.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "OrderItemHistory"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "OrderItemHistory.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy18_pociobprimaryfs_OrderShare_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "OrderShare"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//OrderShare.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "OrderShare"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "OrderShare.csv"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy19_pociobprimaryfs_OrderStatus_csv",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "OrderStatus"
+					},
+					{
+						"name": "Destination",
+						"value": "pociobprimaryfs//OrderStatus.csv"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobprimaryfs"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_objectApiName": "OrderStatus"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_j4z",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "OrderStatus.csv"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"windowStart": {
+				"type": "String"
+			},
+			"windowEnd": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
