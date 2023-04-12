@@ -1,0 +1,20 @@
+{
+	"name": "DestinationDataset_7ig",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "carsales-raw",
+				"fileSystem": "pociobprimaryfs"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
