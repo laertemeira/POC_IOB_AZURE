@@ -1,0 +1,94 @@
+{
+	"name": "SourceDataset_7ig",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SQLCarSales",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "index",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "brand",
+				"type": "varchar"
+			},
+			{
+				"name": "name",
+				"type": "varchar"
+			},
+			{
+				"name": "bodyType",
+				"type": "varchar"
+			},
+			{
+				"name": "color",
+				"type": "varchar"
+			},
+			{
+				"name": "fuelType",
+				"type": "varchar"
+			},
+			{
+				"name": "year",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "mileage",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "transmission",
+				"type": "varchar"
+			},
+			{
+				"name": "power",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "price",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "vehicleConfiguration",
+				"type": "varchar"
+			},
+			{
+				"name": "engineName",
+				"type": "varchar"
+			},
+			{
+				"name": "engineDisplacement",
+				"type": "varchar"
+			},
+			{
+				"name": "date",
+				"type": "varchar"
+			},
+			{
+				"name": "location",
+				"type": "varchar"
+			},
+			{
+				"name": "link",
+				"type": "varchar"
+			},
+			{
+				"name": "parse_date",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "sales"
+		}
+	}
+}
