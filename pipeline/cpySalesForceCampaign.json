@@ -5,7 +5,14 @@
 			{
 				"name": "Copy1_pociobprimaryfs_Campaign_csv",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy4_pociobprimaryfs_CampaignHistory_csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -89,91 +96,16 @@
 				]
 			},
 			{
-				"name": "Copy2_pociobprimaryfs_CampaignChangeEvent_csv",
-				"type": "Copy",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [
-					{
-						"name": "Source",
-						"value": "CampaignChangeEvent"
-					},
-					{
-						"name": "Destination",
-						"value": "pociobprimaryfs//CampaignChangeEvent.csv"
-					}
-				],
-				"typeProperties": {
-					"source": {
-						"type": "SalesforceSource",
-						"readBehavior": "query"
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"enableSkipIncompatibleRow": true,
-					"validateDataConsistency": true,
-					"logSettings": {
-						"enableCopyActivityLog": true,
-						"copyActivityLogSettings": {
-							"logLevel": "Warning",
-							"enableReliableLogging": false
-						},
-						"logLocationSettings": {
-							"linkedServiceName": {
-								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
-								"type": "LinkedServiceReference"
-							},
-							"path": "pociobprimaryfs"
-						}
-					},
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "SourceDataset_j4z",
-						"type": "DatasetReference",
-						"parameters": {
-							"cw_objectApiName": "CampaignChangeEvent"
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "DestinationDataset_j4z",
-						"type": "DatasetReference",
-						"parameters": {
-							"cw_fileName": "CampaignChangeEvent.csv"
-						}
-					}
-				]
-			},
-			{
 				"name": "Copy3_pociobprimaryfs_CampaignFeed_csv",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy5_pociobprimaryfs_CampaignMember_csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -255,7 +187,14 @@
 			{
 				"name": "Copy4_pociobprimaryfs_CampaignHistory_csv",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy3_pociobprimaryfs_CampaignFeed_csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -417,91 +356,16 @@
 				]
 			},
 			{
-				"name": "Copy6_pociobprimaryfs_CampaignMemberChangeEvent_cs",
-				"type": "Copy",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [
-					{
-						"name": "Source",
-						"value": "CampaignMemberChangeEvent"
-					},
-					{
-						"name": "Destination",
-						"value": "pociobprimaryfs//CampaignMemberChangeEvent.csv"
-					}
-				],
-				"typeProperties": {
-					"source": {
-						"type": "SalesforceSource",
-						"readBehavior": "query"
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"enableSkipIncompatibleRow": true,
-					"validateDataConsistency": true,
-					"logSettings": {
-						"enableCopyActivityLog": true,
-						"copyActivityLogSettings": {
-							"logLevel": "Warning",
-							"enableReliableLogging": false
-						},
-						"logLocationSettings": {
-							"linkedServiceName": {
-								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
-								"type": "LinkedServiceReference"
-							},
-							"path": "pociobprimaryfs"
-						}
-					},
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "SourceDataset_j4z",
-						"type": "DatasetReference",
-						"parameters": {
-							"cw_objectApiName": "CampaignMemberChangeEvent"
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "DestinationDataset_j4z",
-						"type": "DatasetReference",
-						"parameters": {
-							"cw_fileName": "CampaignMemberChangeEvent.csv"
-						}
-					}
-				]
-			},
-			{
 				"name": "Copy7_pociobprimaryfs_CampaignMemberStatus_csv",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy1_pociobprimaryfs_Campaign_csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -581,91 +445,16 @@
 				]
 			},
 			{
-				"name": "Copy8_pociobprimaryfs_CampaignMemberStatusChangeEv",
-				"type": "Copy",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [
-					{
-						"name": "Source",
-						"value": "CampaignMemberStatusChangeEvent"
-					},
-					{
-						"name": "Destination",
-						"value": "pociobprimaryfs//CampaignMemberStatusChangeEvent.csv"
-					}
-				],
-				"typeProperties": {
-					"source": {
-						"type": "SalesforceSource",
-						"readBehavior": "query"
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"enableSkipIncompatibleRow": true,
-					"validateDataConsistency": true,
-					"logSettings": {
-						"enableCopyActivityLog": true,
-						"copyActivityLogSettings": {
-							"logLevel": "Warning",
-							"enableReliableLogging": false
-						},
-						"logLocationSettings": {
-							"linkedServiceName": {
-								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
-								"type": "LinkedServiceReference"
-							},
-							"path": "pociobprimaryfs"
-						}
-					},
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "SourceDataset_j4z",
-						"type": "DatasetReference",
-						"parameters": {
-							"cw_objectApiName": "CampaignMemberStatusChangeEvent"
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "DestinationDataset_j4z",
-						"type": "DatasetReference",
-						"parameters": {
-							"cw_fileName": "CampaignMemberStatusChangeEvent.csv"
-						}
-					}
-				]
-			},
-			{
 				"name": "Copy9_pociobprimaryfs_CampaignShare_csv",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy7_pociobprimaryfs_CampaignMemberStatus_csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -747,7 +536,14 @@
 			{
 				"name": "Copy10_pociobprimaryfs_Order_csv",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy9_pociobprimaryfs_CampaignShare_csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -827,91 +623,16 @@
 				]
 			},
 			{
-				"name": "Copy11_pociobprimaryfs_OrderChangeEvent_csv",
-				"type": "Copy",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [
-					{
-						"name": "Source",
-						"value": "OrderChangeEvent"
-					},
-					{
-						"name": "Destination",
-						"value": "pociobprimaryfs//OrderChangeEvent.csv"
-					}
-				],
-				"typeProperties": {
-					"source": {
-						"type": "SalesforceSource",
-						"readBehavior": "query"
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"enableSkipIncompatibleRow": true,
-					"validateDataConsistency": true,
-					"logSettings": {
-						"enableCopyActivityLog": true,
-						"copyActivityLogSettings": {
-							"logLevel": "Warning",
-							"enableReliableLogging": false
-						},
-						"logLocationSettings": {
-							"linkedServiceName": {
-								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
-								"type": "LinkedServiceReference"
-							},
-							"path": "pociobprimaryfs"
-						}
-					},
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "SourceDataset_j4z",
-						"type": "DatasetReference",
-						"parameters": {
-							"cw_objectApiName": "OrderChangeEvent"
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "DestinationDataset_j4z",
-						"type": "DatasetReference",
-						"parameters": {
-							"cw_fileName": "OrderChangeEvent.csv"
-						}
-					}
-				]
-			},
-			{
 				"name": "Copy12_pociobprimaryfs_OrderFeed_csv",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy10_pociobprimaryfs_Order_csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -993,7 +714,14 @@
 			{
 				"name": "Copy13_pociobprimaryfs_OrderHistory_csv",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy12_pociobprimaryfs_OrderFeed_csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -1075,7 +803,14 @@
 			{
 				"name": "Copy14_pociobprimaryfs_OrderItem_csv",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy13_pociobprimaryfs_OrderHistory_csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -1155,91 +890,16 @@
 				]
 			},
 			{
-				"name": "Copy15_pociobprimaryfs_OrderItemChangeEvent_csv",
-				"type": "Copy",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [
-					{
-						"name": "Source",
-						"value": "OrderItemChangeEvent"
-					},
-					{
-						"name": "Destination",
-						"value": "pociobprimaryfs//OrderItemChangeEvent.csv"
-					}
-				],
-				"typeProperties": {
-					"source": {
-						"type": "SalesforceSource",
-						"readBehavior": "query"
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"enableSkipIncompatibleRow": true,
-					"validateDataConsistency": true,
-					"logSettings": {
-						"enableCopyActivityLog": true,
-						"copyActivityLogSettings": {
-							"logLevel": "Warning",
-							"enableReliableLogging": false
-						},
-						"logLocationSettings": {
-							"linkedServiceName": {
-								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
-								"type": "LinkedServiceReference"
-							},
-							"path": "pociobprimaryfs"
-						}
-					},
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "SourceDataset_j4z",
-						"type": "DatasetReference",
-						"parameters": {
-							"cw_objectApiName": "OrderItemChangeEvent"
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "DestinationDataset_j4z",
-						"type": "DatasetReference",
-						"parameters": {
-							"cw_fileName": "OrderItemChangeEvent.csv"
-						}
-					}
-				]
-			},
-			{
 				"name": "Copy16_pociobprimaryfs_OrderItemFeed_csv",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy14_pociobprimaryfs_OrderItem_csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -1321,7 +981,14 @@
 			{
 				"name": "Copy17_pociobprimaryfs_OrderItemHistory_csv",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy16_pociobprimaryfs_OrderItemFeed_csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -1403,7 +1070,14 @@
 			{
 				"name": "Copy18_pociobprimaryfs_OrderShare_csv",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy17_pociobprimaryfs_OrderItemHistory_csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -1485,7 +1159,14 @@
 			{
 				"name": "Copy19_pociobprimaryfs_OrderStatus_csv",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy18_pociobprimaryfs_OrderShare_csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
