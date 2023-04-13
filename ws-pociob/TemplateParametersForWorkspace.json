@@ -1,0 +1,42 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "ws-pociob"
+		},
+		"SQLCarSales_connectionString": {
+			"value": ""
+		},
+		"SalesforceLM_password": {
+			"value": ""
+		},
+		"SalesforceLM_securityToken": {
+			"value": ""
+		},
+		"ws-pociob-WorkspaceDefaultSqlServer_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:ws-pociob.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"SalesforceLM_properties_typeProperties_environmentUrl": {
+			"value": "https://login.salesforce.com"
+		},
+		"SalesforceLM_properties_typeProperties_username": {
+			"value": "laertemeira@myself.sandbox"
+		},
+		"ws-pociob-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://pocioblake.dfs.core.windows.net"
+		},
+		"Trigger_7ig_properties_cpyDeltaPipeSales_parameters_windowStart": {
+			"value": "@{addhours(trigger().scheduledTime, -24000)}"
+		},
+		"Trigger_7ig_properties_cpyDeltaPipeSales_parameters_windowEnd": {
+			"value": "@trigger().scheduledTime"
+		},
+		"Trigger_j4z_properties_cpySalesForceCampaign_parameters_windowStart": {
+			"value": "@{addminutes(trigger().scheduledTime, -15)}"
+		},
+		"Trigger_j4z_properties_cpySalesForceCampaign_parameters_windowEnd": {
+			"value": "@trigger().scheduledTime"
+		}
+	}
+}
