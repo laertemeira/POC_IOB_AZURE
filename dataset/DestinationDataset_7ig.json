@@ -10,8 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "carsales-raw",
-				"fileSystem": "pociobprimaryfs"
+				"fileSystem": "pociobrawlanding"
 			},
 			"compressionCodec": "snappy"
 		},
