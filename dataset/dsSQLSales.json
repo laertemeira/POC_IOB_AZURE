@@ -1,5 +1,5 @@
 {
-	"name": "SourceDataset_7ig",
+	"name": "dsSQLSales",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "SQLCarSales",

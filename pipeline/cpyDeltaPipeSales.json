@@ -71,13 +71,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SourceDataset_7ig",
+						"referenceName": "dsSQLSales",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "DestinationDataset_7ig",
+						"referenceName": "tgtSalesParquet",
 						"type": "DatasetReference"
 					}
 				]

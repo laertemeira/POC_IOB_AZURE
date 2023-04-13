@@ -1,5 +1,5 @@
 {
-	"name": "DestinationDataset_7ig",
+	"name": "tgtSalesParquet",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ws-pociob-WorkspaceDefaultStorage",

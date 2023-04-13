@@ -1,5 +1,5 @@
 {
-	"name": "DestinationDataset_j4z",
+	"name": "tgtSalesForceCSV",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
