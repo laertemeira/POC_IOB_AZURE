@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "CarSales.parquet",
+				"fileName": "carsales.parquet",
 				"fileSystem": "pociobrawlanding"
 			},
 			"compressionCodec": "snappy"
