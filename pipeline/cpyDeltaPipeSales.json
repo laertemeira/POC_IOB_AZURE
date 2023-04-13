@@ -4,7 +4,7 @@
 		"description": "task de test",
 		"activities": [
 			{
-				"name": "Copy_7ig",
+				"name": "pipSQLCarSales",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
