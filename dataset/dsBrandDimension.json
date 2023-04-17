@@ -1,0 +1,20 @@
+{
+	"name": "dsBrandDimension",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "dimensions",
+				"fileSystem": "pociobcleansed"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
