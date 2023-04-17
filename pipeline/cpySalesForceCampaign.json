@@ -5,14 +5,7 @@
 			{
 				"name": "Copy1_pociobprimaryfs_Campaign_csv",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy4_pociobprimaryfs_CampaignHistory_csv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -98,14 +91,7 @@
 			{
 				"name": "Copy3_pociobprimaryfs_CampaignFeed_csv",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy5_pociobprimaryfs_CampaignMember_csv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -187,14 +173,7 @@
 			{
 				"name": "Copy4_pociobprimaryfs_CampaignHistory_csv",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy3_pociobprimaryfs_CampaignFeed_csv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -358,14 +337,7 @@
 			{
 				"name": "Copy7_pociobprimaryfs_CampaignMemberStatus_csv",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy1_pociobprimaryfs_Campaign_csv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -447,14 +419,7 @@
 			{
 				"name": "Copy9_pociobprimaryfs_CampaignShare_csv",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy7_pociobprimaryfs_CampaignMemberStatus_csv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -536,14 +501,7 @@
 			{
 				"name": "Copy10_pociobprimaryfs_Order_csv",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy9_pociobprimaryfs_CampaignShare_csv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -625,14 +583,7 @@
 			{
 				"name": "Copy12_pociobprimaryfs_OrderFeed_csv",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy10_pociobprimaryfs_Order_csv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -714,14 +665,7 @@
 			{
 				"name": "Copy13_pociobprimaryfs_OrderHistory_csv",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy12_pociobprimaryfs_OrderFeed_csv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -803,14 +747,7 @@
 			{
 				"name": "Copy14_pociobprimaryfs_OrderItem_csv",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy13_pociobprimaryfs_OrderHistory_csv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -892,14 +829,7 @@
 			{
 				"name": "Copy16_pociobprimaryfs_OrderItemFeed_csv",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy14_pociobprimaryfs_OrderItem_csv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -981,14 +911,7 @@
 			{
 				"name": "Copy17_pociobprimaryfs_OrderItemHistory_csv",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy16_pociobprimaryfs_OrderItemFeed_csv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -1070,14 +993,7 @@
 			{
 				"name": "Copy18_pociobprimaryfs_OrderShare_csv",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy17_pociobprimaryfs_OrderItemHistory_csv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -1159,14 +1075,7 @@
 			{
 				"name": "Copy19_pociobprimaryfs_OrderStatus_csv",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy18_pociobprimaryfs_OrderShare_csv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
