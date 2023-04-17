@@ -64,7 +64,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SalesForce"
 						}
 					},
 					"translator": {
@@ -153,7 +153,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SalesForce"
 						}
 					},
 					"translator": {
@@ -242,7 +242,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SalesForce"
 						}
 					},
 					"translator": {
@@ -324,7 +324,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SalesForce"
 						}
 					},
 					"translator": {
@@ -413,7 +413,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SalesForce"
 						}
 					},
 					"translator": {
@@ -502,7 +502,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SalesForce"
 						}
 					},
 					"translator": {
@@ -591,7 +591,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SalesForce"
 						}
 					},
 					"translator": {
@@ -680,7 +680,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SalesForce"
 						}
 					},
 					"translator": {
@@ -769,7 +769,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SalesForce"
 						}
 					},
 					"translator": {
@@ -858,7 +858,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SalesForce"
 						}
 					},
 					"translator": {
@@ -947,7 +947,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SalesForce"
 						}
 					},
 					"translator": {
@@ -1036,7 +1036,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SalesForce"
 						}
 					},
 					"translator": {
@@ -1125,7 +1125,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SalesForce"
 						}
 					},
 					"translator": {
@@ -1214,7 +1214,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SalesForce"
 						}
 					},
 					"translator": {

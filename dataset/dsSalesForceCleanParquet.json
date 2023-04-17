@@ -10,7 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileSystem": "pociobcleansed"
+				"folderPath": "SalesForce",
+				"fileSystem": "pociobrawlanding"
 			},
 			"compressionCodec": "snappy"
 		},
