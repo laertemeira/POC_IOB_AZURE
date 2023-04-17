@@ -6,8 +6,11 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"cw_fileName": {
-				"type": "String"
+			"TableName": {
+				"type": "string"
+			},
+			"SchemaName": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -16,7 +19,11 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@dataset().cw_fileName",
+					"value": "concat(@(dataset().TableName),\".csv\")",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().SchemaName",
 					"type": "Expression"
 				},
 				"fileSystem": "pociobrawlanding"
