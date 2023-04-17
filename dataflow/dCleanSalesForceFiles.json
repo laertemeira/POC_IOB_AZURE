@@ -14,10 +14,6 @@
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "dsSalesForceCleanParquet",
-						"type": "DatasetReference"
-					},
 					"name": "snkWriteParquet",
 					"rejectedDataLinkedService": {
 						"referenceName": "ws-pociob-WorkspaceDefaultStorage",
@@ -42,11 +38,7 @@
 				"          {_loadtime} = currentTimestamp()) ~> dcTrimLowerStrings",
 				"dcTrimLowerStrings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     format: 'parquet',",
 				"     filePattern:'CleanFile[n].parquet',",
-				"     umask: 0022,",
-				"     preCommands: [],",
-				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     outputAssertFailedRows: true,",

@@ -28,7 +28,11 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
-							"wildcardFileName": "*.parquet",
+							"wildcardFolderPath": {
+								"value": "@(pipeline().parameters.Schema)",
+								"type": "Expression"
+							},
+							"wildcardFileName": "/@(pipeline().parameters.Table)",
 							"enablePartitionDiscovery": false
 						}
 					},
@@ -51,6 +55,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@activity('lkpTables').output",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "exePipeClean",
@@ -69,6 +77,14 @@
 				}
 			}
 		],
+		"parameters": {
+			"Schema": {
+				"type": "String"
+			},
+			"Table": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }

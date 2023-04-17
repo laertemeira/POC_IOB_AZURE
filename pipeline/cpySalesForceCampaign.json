@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy1_pociobprimaryfs_Campaign_csv",
+				"name": "cpyCampaign",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -89,7 +89,7 @@
 				]
 			},
 			{
-				"name": "Copy3_pociobprimaryfs_CampaignFeed_csv",
+				"name": "cpyCampaignFeed",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -171,7 +171,7 @@
 				]
 			},
 			{
-				"name": "Copy4_pociobprimaryfs_CampaignHistory_csv",
+				"name": "cpyCampaignHistory",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -253,7 +253,7 @@
 				]
 			},
 			{
-				"name": "Copy5_pociobprimaryfs_CampaignMember_csv",
+				"name": "cpyCampaignMember",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -335,7 +335,7 @@
 				]
 			},
 			{
-				"name": "Copy7_pociobprimaryfs_CampaignMemberStatus_csv",
+				"name": "cpyCampaignMemberStatus",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -417,7 +417,7 @@
 				]
 			},
 			{
-				"name": "Copy9_pociobprimaryfs_CampaignShare_csv",
+				"name": "cpyCampaignShare",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -499,7 +499,7 @@
 				]
 			},
 			{
-				"name": "Copy10_pociobprimaryfs_Order_csv",
+				"name": "cpyOrder",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -581,7 +581,7 @@
 				]
 			},
 			{
-				"name": "Copy12_pociobprimaryfs_OrderFeed_csv",
+				"name": "cpyOrderFeed",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -663,7 +663,7 @@
 				]
 			},
 			{
-				"name": "Copy13_pociobprimaryfs_OrderHistory_csv",
+				"name": "cpyOrderHistory",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -745,7 +745,7 @@
 				]
 			},
 			{
-				"name": "Copy14_pociobprimaryfs_OrderItem_csv",
+				"name": "cpyOrderItem",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -827,7 +827,7 @@
 				]
 			},
 			{
-				"name": "Copy16_pociobprimaryfs_OrderItemFeed_csv",
+				"name": "cpyOrderItemFeed",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -909,7 +909,7 @@
 				]
 			},
 			{
-				"name": "Copy17_pociobprimaryfs_OrderItemHistory_csv",
+				"name": "cpyOrderItemHistory",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -991,7 +991,7 @@
 				]
 			},
 			{
-				"name": "Copy18_pociobprimaryfs_OrderShare_csv",
+				"name": "cpyOrderShare",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -1073,7 +1073,7 @@
 				]
 			},
 			{
-				"name": "Copy19_pociobprimaryfs_OrderStatus_csv",
+				"name": "cpyOrderStatus",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
