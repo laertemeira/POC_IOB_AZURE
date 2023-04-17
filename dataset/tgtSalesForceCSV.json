@@ -19,9 +19,11 @@
 					"value": "@dataset().cw_fileName",
 					"type": "Expression"
 				},
+				"folderPath": "SalesForce",
 				"fileSystem": "pociobrawlanding"
 			},
 			"columnDelimiter": "|",
+			"rowDelimiter": "\n",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
