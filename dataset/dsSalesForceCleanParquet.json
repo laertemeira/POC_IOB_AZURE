@@ -1,0 +1,19 @@
+{
+	"name": "dsSalesForceCleanParquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "pociobcleansed"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

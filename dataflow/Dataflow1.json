@@ -1,0 +1,57 @@
+{
+	"name": "Dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsSalesForceCSV",
+						"type": "DatasetReference"
+					},
+					"name": "srcSalesForceCSV"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dsSalesForceCleanParquet",
+						"type": "DatasetReference"
+					},
+					"name": "snkWriteParquet",
+					"rejectedDataLinkedService": {
+						"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "dcTrimLowerStrings"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: true,",
+				"     moveFiles: ['','Processed'],",
+				"     rowUrlColumn: '_filename',",
+				"     wildcardPaths:['*.csv']) ~> srcSalesForceCSV",
+				"srcSalesForceCSV derive(each(match(type==\"string\"), $$ = lower(trim($$))),",
+				"          {_loadtime} = currentTimestamp()) ~> dcTrimLowerStrings",
+				"dcTrimLowerStrings sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     filePattern:'CleanFile[n].parquet',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     outputAssertFailedRows: true,",
+				"     assertFailure_fileSystem: 'pociobcleansed',",
+				"     assertFailure_folderPath: 'fail') ~> snkWriteParquet"
+			]
+		}
+	}
+}
