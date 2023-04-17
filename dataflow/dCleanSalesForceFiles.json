@@ -33,6 +33,7 @@
 			"scriptLines": [
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
 				"     ignoreNoFilesFound: true,",
 				"     moveFiles: ['','Processed'],",
 				"     rowUrlColumn: '_filename',",
