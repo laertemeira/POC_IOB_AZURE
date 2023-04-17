@@ -18,11 +18,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "pociobrawlanding/@(dataset().SchemaName)/@(dataset().TableName)",
-					"type": "Expression"
-				},
-				"fileSystem": "pociobcleansed"
+				"folderPath": "@(dataset().SchemaName)/@(dataset().TableName)",
+				"fileSystem": "pociobrawlanding"
 			},
 			"columnDelimiter": "|",
 			"escapeChar": "\\",
