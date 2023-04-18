@@ -37,7 +37,7 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "dsSalesForceCleanParquet",
+						"referenceName": "ds_02_SILVER_Clean_SalesForce",
 						"type": "DatasetReference"
 					}
 				}

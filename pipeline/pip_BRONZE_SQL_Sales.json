@@ -71,13 +71,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "ds_BRONZE_Extract_SQLSales",
+						"referenceName": "ds_01_BRONZE_Extract_SQLSales",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "ds_BRONZE_Ingest_SQLSales_Parquet",
+						"referenceName": "ds_01_BRONZE_Ingest_SQLSales_Parquet",
 						"type": "DatasetReference"
 					}
 				]

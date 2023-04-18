@@ -1,5 +1,5 @@
 {
-	"name": "dsSalesForceCleanParquet",
+	"name": "ds_02_SILVER_Clean_SalesForce",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ws-pociob-WorkspaceDefaultStorage",

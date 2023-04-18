@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "ds_BRONZE_Read_SQLSales_Parquet",
+						"referenceName": "ds_01_BRONZE_Read_SQLSales_Parquet",
 						"type": "DatasetReference"
 					},
 					"name": "srcSales"
