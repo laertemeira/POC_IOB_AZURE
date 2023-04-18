@@ -1,6 +1,9 @@
 {
 	"name": "df_02_SILVER_Clean_SalesForce",
 	"properties": {
+		"folder": {
+			"name": "02_SILVER"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
