@@ -1157,10 +1157,12 @@
 		],
 		"parameters": {
 			"windowStart": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "01/01/2020"
 			},
 			"windowEnd": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "04/18/2023"
 			}
 		},
 		"annotations": []
