@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "ds_01_BRONZE_Read_SalesForce_CSV",
+						"referenceName": "ds_02_SILVER_Read_SalesForce_CSV",
 						"type": "DatasetReference"
 					},
 					"name": "srcSalesForceCSV"

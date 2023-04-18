@@ -20,23 +20,17 @@
 				],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
+						"type": "ParquetSource",
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
-							"wildcardFileName": "/@(pipeline().parameters.Table)",
+							"wildcardFileName": "*.parquet",
 							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
 						}
 					},
 					"dataset": {
-						"referenceName": "ds_01_BRONZE_Read_SalesForce_CSV",
-						"type": "DatasetReference",
-						"parameters": {
-							"ptable": "Campaign"
-						}
+						"referenceName": "ds_02_SILVER_Clean_SalesForce",
+						"type": "DatasetReference"
 					}
 				}
 			},

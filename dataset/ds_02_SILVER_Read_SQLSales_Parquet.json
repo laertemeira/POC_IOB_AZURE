@@ -1,5 +1,5 @@
 {
-	"name": "ds_01_BRONZE_Read_SQLSales_Parquet",
+	"name": "ds_02_SILVER_Read_SQLSales_Parquet",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
