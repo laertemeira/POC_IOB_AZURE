@@ -80,6 +80,9 @@
 				"type": "String"
 			}
 		},
+		"folder": {
+			"name": "02_SILVER"
+		},
 		"annotations": []
 	}
 }
