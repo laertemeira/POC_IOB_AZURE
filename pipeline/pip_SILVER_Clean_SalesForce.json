@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dCleanSalesForceFiles",
+						"referenceName": "df_SILVER_Clean_SalesForce",
 						"type": "DataFlowReference"
 					},
 					"compute": {

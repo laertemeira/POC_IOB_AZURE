@@ -1,5 +1,5 @@
 {
-	"name": "dCleanSalesForceFiles",
+	"name": "df_SILVER_Clean_SalesForce",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
