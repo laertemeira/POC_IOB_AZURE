@@ -15,30 +15,28 @@
 				},
 				"userProperties": [
 					{
-						"name": "Schema",
-						"value": "SalesForce"
-					},
-					{
-						"name": "Table"
+						"name": "ptable"
 					}
 				],
 				"typeProperties": {
 					"source": {
-						"type": "ParquetSource",
+						"type": "DelimitedTextSource",
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
-							"wildcardFolderPath": {
-								"value": "@(pipeline().parameters.Schema)",
-								"type": "Expression"
-							},
 							"wildcardFileName": "/@(pipeline().parameters.Table)",
 							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
 						}
 					},
 					"dataset": {
-						"referenceName": "ds_02_SILVER_Clean_SalesForce",
-						"type": "DatasetReference"
+						"referenceName": "ds_01_BRONZE_Read_SalesForce_CSV",
+						"type": "DatasetReference",
+						"parameters": {
+							"ptable": "Campaign"
+						}
 					}
 				}
 			},
