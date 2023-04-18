@@ -10,6 +10,9 @@
 				"type": "String"
 			}
 		},
+		"folder": {
+			"name": "01_BRONZE"
+		},
 		"annotations": [],
 		"type": "SalesforceObject",
 		"schema": [],

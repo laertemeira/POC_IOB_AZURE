@@ -5,6 +5,9 @@
 			"referenceName": "SQLCarSales",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "01_BRONZE"
+		},
 		"annotations": [],
 		"type": "SqlServerTable",
 		"schema": [
