@@ -14,6 +14,7 @@
 					"value": "@concat(pipeline().Pipeline, '.parquet')",
 					"type": "Expression"
 				},
+				"folderPath": "SQLSales",
 				"fileSystem": "pociobrawlanding"
 			},
 			"compressionCodec": "snappy"
