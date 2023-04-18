@@ -1,5 +1,5 @@
 {
-	"name": "dsBrandDimension",
+	"name": "ds_03_GOLD_Dim_Brand",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ws-pociob-WorkspaceDefaultStorage",

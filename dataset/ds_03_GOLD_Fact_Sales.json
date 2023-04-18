@@ -1,5 +1,5 @@
 {
-	"name": "dsBrands",
+	"name": "ds_03_GOLD_Fact_Sales",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
