@@ -1,5 +1,5 @@
 {
-	"name": "dsSFSource",
+	"name": "ds_BRONZE_Extract_SalesForce",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "SalesforceLM",

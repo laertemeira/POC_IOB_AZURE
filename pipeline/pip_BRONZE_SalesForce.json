@@ -71,7 +71,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSFSource",
+						"referenceName": "ds_BRONZE_Extract_SalesForce",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_objectApiName": "Campaign"
@@ -153,7 +153,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSFSource",
+						"referenceName": "ds_BRONZE_Extract_SalesForce",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_objectApiName": "CampaignFeed"
@@ -235,7 +235,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSFSource",
+						"referenceName": "ds_BRONZE_Extract_SalesForce",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_objectApiName": "CampaignHistory"
@@ -317,7 +317,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSFSource",
+						"referenceName": "ds_BRONZE_Extract_SalesForce",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_objectApiName": "CampaignMember"
@@ -399,7 +399,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSFSource",
+						"referenceName": "ds_BRONZE_Extract_SalesForce",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_objectApiName": "CampaignMemberStatus"
@@ -481,7 +481,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSFSource",
+						"referenceName": "ds_BRONZE_Extract_SalesForce",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_objectApiName": "CampaignShare"
@@ -563,7 +563,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSFSource",
+						"referenceName": "ds_BRONZE_Extract_SalesForce",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_objectApiName": "Order"
@@ -645,7 +645,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSFSource",
+						"referenceName": "ds_BRONZE_Extract_SalesForce",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_objectApiName": "OrderFeed"
@@ -727,7 +727,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSFSource",
+						"referenceName": "ds_BRONZE_Extract_SalesForce",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_objectApiName": "OrderHistory"
@@ -809,7 +809,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSFSource",
+						"referenceName": "ds_BRONZE_Extract_SalesForce",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_objectApiName": "OrderItem"
@@ -891,7 +891,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSFSource",
+						"referenceName": "ds_BRONZE_Extract_SalesForce",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_objectApiName": "OrderItemFeed"
@@ -973,7 +973,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSFSource",
+						"referenceName": "ds_BRONZE_Extract_SalesForce",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_objectApiName": "OrderItemHistory"
@@ -1055,7 +1055,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSFSource",
+						"referenceName": "ds_BRONZE_Extract_SalesForce",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_objectApiName": "OrderShare"
@@ -1137,7 +1137,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSFSource",
+						"referenceName": "ds_BRONZE_Extract_SalesForce",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_objectApiName": "OrderStatus"
