@@ -5,6 +5,10 @@
 		"typeProperties": {
 			"sources": [
 				{
+					"dataset": {
+						"referenceName": "ds_BRONZE_Read_SalesForce_CSV",
+						"type": "DatasetReference"
+					},
 					"name": "srcSalesForceCSV"
 				}
 			],
@@ -26,7 +30,8 @@
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     inferDriftedColumnTypes: true,",
-				"     moveFiles: ['','Processed'],",
+				"     ignoreNoFilesFound: true,",
+				"     moveFiles: ['SalesForce','Processed'],",
 				"     rowUrlColumn: '_filename',",
 				"     wildcardPaths:['*.csv']) ~> srcSalesForceCSV",
 				"srcSalesForceCSV derive(each(match(type==\"string\"), $$ = lower(trim($$))),",
