@@ -17,25 +17,7 @@
 					{
 						"name": "ptable"
 					}
-				],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"wildcardFileName": "*.csv",
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "ds_02_SILVER_Read_SalesForce_CSV",
-						"type": "DatasetReference"
-					}
-				}
+				]
 			},
 			{
 				"name": "feaTables",

@@ -1,0 +1,22 @@
+{
+	"name": "ds_02_SILVER_SalesForce_RawFolder",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "SalesForce",
+				"fileSystem": "pociobrawlanding"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
