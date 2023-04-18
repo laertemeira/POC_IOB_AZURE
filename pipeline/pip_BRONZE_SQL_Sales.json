@@ -4,7 +4,7 @@
 		"description": "task de test",
 		"activities": [
 			{
-				"name": "pipSQLCarSales",
+				"name": "cpy_SQL_Sales",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -57,7 +57,7 @@
 								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 								"type": "LinkedServiceReference"
 							},
-							"path": "pociobprimaryfs"
+							"path": "pociobrawlanding/SQLSales"
 						}
 					},
 					"translator": {
