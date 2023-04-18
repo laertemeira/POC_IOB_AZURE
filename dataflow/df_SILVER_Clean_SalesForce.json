@@ -5,10 +5,6 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"dataset": {
-						"referenceName": "dsSalesForceCSV",
-						"type": "DatasetReference"
-					},
 					"name": "srcSalesForceCSV"
 				}
 			],
@@ -30,7 +26,6 @@
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     inferDriftedColumnTypes: true,",
-				"     ignoreNoFilesFound: true,",
 				"     moveFiles: ['','Processed'],",
 				"     rowUrlColumn: '_filename',",
 				"     wildcardPaths:['*.csv']) ~> srcSalesForceCSV",

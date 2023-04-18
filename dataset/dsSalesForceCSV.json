@@ -22,10 +22,7 @@
 					"value": "concat(@(dataset().TableName),\".csv\")",
 					"type": "Expression"
 				},
-				"folderPath": {
-					"value": "@dataset().SchemaName",
-					"type": "Expression"
-				},
+				"folderPath": "SalesForce",
 				"fileSystem": "pociobrawlanding"
 			},
 			"columnDelimiter": "|",
