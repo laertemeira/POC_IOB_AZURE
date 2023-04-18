@@ -1,5 +1,5 @@
 {
-	"name": "tgtSalesParquet",
+	"name": "ds_BRONZE_Ingest_SQLSales_Parquet",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
@@ -10,7 +10,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "@concat(pipeline().Pipeline, '.parquet')",
+				"fileName": {
+					"value": "@concat(pipeline().Pipeline, '.parquet')",
+					"type": "Expression"
+				},
 				"fileSystem": "pociobrawlanding"
 			},
 			"compressionCodec": "snappy"

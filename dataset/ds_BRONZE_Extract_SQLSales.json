@@ -1,5 +1,5 @@
 {
-	"name": "dsSQLSales",
+	"name": "ds_BRONZE_Extract_SQLSales",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "SQLCarSales",
