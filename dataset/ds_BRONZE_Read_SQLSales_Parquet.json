@@ -1,5 +1,5 @@
 {
-	"name": "dsSalesParquet",
+	"name": "ds_BRONZE_Read_SQLSales_Parquet",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
@@ -14,6 +14,7 @@
 					"value": "cpyDeltaPipeSales.parquet",
 					"type": "Expression"
 				},
+				"folderPath": "SQLSales",
 				"fileSystem": "pociobrawlanding"
 			},
 			"compressionCodec": "snappy"
