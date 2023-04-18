@@ -1,9 +1,12 @@
 {
-	"name": "ds_02_SILVER_SalesForce_RawFolder",
+	"name": "ds_02_SILVER_RawFiles_SalesForce",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "02_SILVER"
 		},
 		"annotations": [],
 		"type": "DelimitedText",

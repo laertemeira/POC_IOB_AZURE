@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "ds_02_SILVER_SalesForce_RawFolder",
+						"referenceName": "ds_02_SILVER_RawFiles_SalesForce",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
