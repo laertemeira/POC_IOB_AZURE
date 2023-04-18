@@ -1,5 +1,5 @@
 {
-	"name": "pip_BRONZE_SQL_Sales",
+	"name": "pip_01_BRONZE_SQL_Sales",
 	"properties": {
 		"description": "task de test",
 		"activities": [

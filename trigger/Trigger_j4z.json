@@ -6,7 +6,7 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "pip_BRONZE_SalesForce",
+					"referenceName": "pip_01_BRONZE_SalesForce",
 					"type": "PipelineReference"
 				},
 				"parameters": {

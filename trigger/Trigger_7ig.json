@@ -6,7 +6,7 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "pip_BRONZE_SQL_Sales",
+					"referenceName": "pip_01_BRONZE_SQL_Sales",
 					"type": "PipelineReference"
 				},
 				"parameters": {

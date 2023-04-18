@@ -1,5 +1,5 @@
 {
-	"name": "pip_SILVER_Clean_SalesForce_Loop",
+	"name": "pip_02_SILVER_Clean_SalesForce_Loop",
 	"properties": {
 		"activities": [
 			{
@@ -67,7 +67,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "pip_SILVER_Clean_SalesForce",
+									"referenceName": "pip_02_SILVER_Clean_SalesForce",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true
