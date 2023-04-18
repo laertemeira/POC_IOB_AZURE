@@ -33,6 +33,9 @@
 				}
 			],
 			"scriptLines": [
+				"parameters{",
+				"     ptable as string",
+				"}",
 				"source(output(",
 				"          index as long,",
 				"          brand as string,",
