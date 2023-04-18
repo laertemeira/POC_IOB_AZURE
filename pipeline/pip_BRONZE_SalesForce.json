@@ -80,7 +80,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "tgtSalesForceCSV",
+						"referenceName": "ds_BRONZE_Ingest_SalesForce_CSV",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_fileName": "Campaign.csv"
@@ -162,7 +162,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "tgtSalesForceCSV",
+						"referenceName": "ds_BRONZE_Ingest_SalesForce_CSV",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_fileName": "CampaignFeed.csv"
@@ -244,7 +244,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "tgtSalesForceCSV",
+						"referenceName": "ds_BRONZE_Ingest_SalesForce_CSV",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_fileName": "CampaignHistory.csv"
@@ -326,7 +326,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "tgtSalesForceCSV",
+						"referenceName": "ds_BRONZE_Ingest_SalesForce_CSV",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_fileName": "CampaignMember.csv"
@@ -408,7 +408,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "tgtSalesForceCSV",
+						"referenceName": "ds_BRONZE_Ingest_SalesForce_CSV",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_fileName": "CampaignMemberStatus.csv"
@@ -490,7 +490,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "tgtSalesForceCSV",
+						"referenceName": "ds_BRONZE_Ingest_SalesForce_CSV",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_fileName": "CampaignShare.csv"
@@ -572,7 +572,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "tgtSalesForceCSV",
+						"referenceName": "ds_BRONZE_Ingest_SalesForce_CSV",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_fileName": "Order.csv"
@@ -654,7 +654,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "tgtSalesForceCSV",
+						"referenceName": "ds_BRONZE_Ingest_SalesForce_CSV",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_fileName": "OrderFeed.csv"
@@ -736,7 +736,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "tgtSalesForceCSV",
+						"referenceName": "ds_BRONZE_Ingest_SalesForce_CSV",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_fileName": "OrderHistory.csv"
@@ -818,7 +818,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "tgtSalesForceCSV",
+						"referenceName": "ds_BRONZE_Ingest_SalesForce_CSV",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_fileName": "OrderItem.csv"
@@ -900,7 +900,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "tgtSalesForceCSV",
+						"referenceName": "ds_BRONZE_Ingest_SalesForce_CSV",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_fileName": "OrderItemFeed.csv"
@@ -982,7 +982,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "tgtSalesForceCSV",
+						"referenceName": "ds_BRONZE_Ingest_SalesForce_CSV",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_fileName": "OrderItemHistory.csv"
@@ -1064,7 +1064,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "tgtSalesForceCSV",
+						"referenceName": "ds_BRONZE_Ingest_SalesForce_CSV",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_fileName": "OrderShare.csv"
@@ -1146,7 +1146,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "tgtSalesForceCSV",
+						"referenceName": "ds_BRONZE_Ingest_SalesForce_CSV",
 						"type": "DatasetReference",
 						"parameters": {
 							"cw_fileName": "OrderStatus.csv"

@@ -1,5 +1,5 @@
 {
-	"name": "tgtSalesForceCSV",
+	"name": "ds_BRONZE_Ingest_SalesForce_CSV",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
