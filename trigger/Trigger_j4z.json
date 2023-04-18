@@ -6,7 +6,7 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "cpySalesForceCampaign",
+					"referenceName": "pip_BRONZE_SalesForce",
 					"type": "PipelineReference"
 				},
 				"parameters": {

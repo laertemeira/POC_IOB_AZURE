@@ -6,7 +6,7 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "cpyDeltaPipeSales",
+					"referenceName": "pip_BRONZE_SQL_Sales",
 					"type": "PipelineReference"
 				},
 				"parameters": {
