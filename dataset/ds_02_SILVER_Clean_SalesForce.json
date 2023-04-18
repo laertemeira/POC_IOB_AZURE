@@ -5,6 +5,9 @@
 			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "02_SILVER"
+		},
 		"annotations": [],
 		"type": "Parquet",
 		"typeProperties": {
