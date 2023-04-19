@@ -3,81 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "cpyOlistCustomers",
-				"type": "Copy",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "SqlDWSource",
-						"queryTimeout": "02:00:00",
-						"isolationLevel": "ReadCommitted",
-						"partitionOption": "None"
-					},
-					"sink": {
-						"type": "ParquetSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings",
-							"metadata": [
-								{
-									"name": "_extractTimestamp",
-									"value": {
-										"value": "@utcnow()",
-										"type": "Expression"
-									}
-								}
-							]
-						},
-						"formatSettings": {
-							"type": "ParquetWriteSettings"
-						}
-					},
-					"enableStaging": false,
-					"enableSkipIncompatibleRow": true,
-					"logSettings": {
-						"enableCopyActivityLog": true,
-						"copyActivityLogSettings": {
-							"logLevel": "Warning",
-							"enableReliableLogging": false
-						},
-						"logLocationSettings": {
-							"linkedServiceName": {
-								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
-								"type": "LinkedServiceReference"
-							},
-							"path": "pociobrawlanding/SQLOlist/log"
-						}
-					},
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "ds_01_BRONZE_Extract_Olist_Customers",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ds_01_BRONZE_Ingest_Olist_Customers",
-						"type": "DatasetReference"
-					}
-				]
-			},
-			{
 				"name": "lkpAllOlistTables",
 				"type": "Lookup",
 				"dependsOn": [],
@@ -117,14 +42,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('lkpAllOlistTables').output.pipelineReturnValue",
+						"value": "@activity('lkpAllOlistTables').output.value",
 						"type": "Expression"
 					},
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "dfOlistAllTables",
-							"type": "ExecuteDataFlow",
+							"name": "Copy data1",
+							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -135,16 +60,22 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"dataflow": {
-									"referenceName": "Dataflow1",
-									"type": "DataFlowReference"
+								"source": {
+									"type": "SqlPoolSource",
+									"sqlReaderQuery": {
+										"value": "@concat('select * from ', item())",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00"
 								},
-								"compute": {
-									"coreCount": 8,
-									"computeType": "General"
-								},
-								"traceLevel": "Fine"
-							}
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_01_BRONZE_OlistPool",
+									"type": "DatasetReference"
+								}
+							]
 						}
 					]
 				}
