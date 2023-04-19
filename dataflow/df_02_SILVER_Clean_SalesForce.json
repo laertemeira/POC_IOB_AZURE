@@ -55,8 +55,7 @@
 				"     saveOrder: 1,",
 				"     outputAssertFailedRows: true,",
 				"     assertFailure_fileSystem: 'pociobcleansed',",
-				"     assertFailure_folderPath: 'fail',",
-				"     partitionBy('hash', 1)) ~> snkWriteParquet"
+				"     assertFailure_folderPath: 'fail') ~> snkWriteParquet"
 			]
 		}
 	}
