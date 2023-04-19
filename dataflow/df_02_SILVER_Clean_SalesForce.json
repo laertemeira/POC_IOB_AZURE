@@ -67,7 +67,8 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     outputAssertFailedRows: true,",
 				"     assertFailure_fileSystem: 'pociobcleansed',",
-				"     assertFailure_folderPath: 'fail') ~> snkWriteParquet"
+				"     assertFailure_folderPath: 'fail',",
+				"     partitionBy('hash', 1)) ~> snkWriteParquet"
 			]
 		}
 	}
