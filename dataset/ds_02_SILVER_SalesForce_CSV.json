@@ -16,7 +16,8 @@
 				"folderPath": "SalesForce",
 				"fileSystem": "pociobcleansed"
 			},
-			"columnDelimiter": ",",
+			"columnDelimiter": "|",
+			"rowDelimiter": "\n",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
