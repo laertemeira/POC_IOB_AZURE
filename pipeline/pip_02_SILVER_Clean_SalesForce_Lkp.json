@@ -68,14 +68,8 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataflow": {
-									"referenceName": "df_02_SILVER_Clean_SalesForce_InLine",
-									"type": "DataFlowReference",
-									"parameters": {
-										"ptable": {
-											"value": "'@{item()}'",
-											"type": "Expression"
-										}
-									}
+									"referenceName": "df_02_SILVER_Clean_SalesForce",
+									"type": "DataFlowReference"
 								},
 								"compute": {
 									"coreCount": 8,
