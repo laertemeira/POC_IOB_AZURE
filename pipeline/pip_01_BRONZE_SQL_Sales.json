@@ -14,16 +14,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [
-					{
-						"name": "Source",
-						"value": "dbo.sales"
-					},
-					{
-						"name": "Destination",
-						"value": "pociobprimaryfs//carsales-raw"
-					}
-				],
+				"userProperties": [],
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
