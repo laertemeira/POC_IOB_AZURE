@@ -21,7 +21,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "SQLSales",
+				"folderPath": {
+					"value": "@{dataset().Schema}/@{dataset().Table}",
+					"type": "Expression"
+				},
 				"fileSystem": "pociobrawlanding"
 			},
 			"compressionCodec": "snappy"
