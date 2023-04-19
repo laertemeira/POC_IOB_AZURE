@@ -35,7 +35,7 @@
 			],
 			"scriptLines": [
 				"parameters{",
-				"     ptable as string",
+				"     ptable as string ($ptable)",
 				"}",
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
