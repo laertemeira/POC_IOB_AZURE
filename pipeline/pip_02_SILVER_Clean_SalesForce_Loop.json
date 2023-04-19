@@ -13,14 +13,30 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [
-					{
-						"name": "ptable"
-					}
-				]
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": "*",
+							"wildcardFileName": "*.csv",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "ds_02_SILVER_RawFiles_SalesForce",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
 			},
 			{
-				"name": "feaTables",
+				"name": "ForEach1",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -36,32 +52,42 @@
 						"value": "@activity('lkpTables').output",
 						"type": "Expression"
 					},
+					"isSequential": true,
 					"activities": [
 						{
-							"name": "exePipeClean",
-							"type": "ExecutePipeline",
+							"name": "Data flow1",
+							"type": "ExecuteDataFlow",
 							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
-								"pipeline": {
-									"referenceName": "pip_02_SILVER_Clean_SalesForce",
-									"type": "PipelineReference"
+								"dataflow": {
+									"referenceName": "df_02_SILVER_Clean_SalesForce",
+									"type": "DataFlowReference",
+									"parameters": {
+										"ptable": {
+											"value": "'@{item()}'",
+											"type": "Expression"
+										}
+									}
 								},
-								"waitOnCompletion": true
+								"compute": {
+									"coreCount": 8,
+									"computeType": "General"
+								},
+								"traceLevel": "Fine"
 							}
 						}
 					]
 				}
 			}
 		],
-		"parameters": {
-			"Schema": {
-				"type": "String"
-			},
-			"Table": {
-				"type": "String"
-			}
-		},
 		"folder": {
 			"name": "02_SILVER"
 		},
