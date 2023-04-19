@@ -4,7 +4,7 @@
 		"description": "task de test",
 		"activities": [
 			{
-				"name": "cpy_SQL_Sales",
+				"name": "cpySQLSales",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
