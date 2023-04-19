@@ -5,6 +5,14 @@
 			"referenceName": "SQLCarSales",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"Schema": {
+				"type": "string"
+			},
+			"Table": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "01_BRONZE"
 		},
