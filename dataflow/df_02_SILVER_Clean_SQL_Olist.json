@@ -9,16 +9,17 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "ds_02_SILVER_Read_SQLSales_Parquet",
+						"referenceName": "ds_02_SILVER_Read_Olist_Parquet",
 						"type": "DatasetReference"
 					},
-					"name": "srcSalesForceCSV"
+					"name": "srcOlistParquet",
+					"description": "Import data from Olist Parquet BRONZE"
 				}
 			],
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "ds_02_SILVER_SalesForce_CSV",
+						"referenceName": "ds_02_SILVER_Write_Olist_Parquet",
 						"type": "DatasetReference"
 					},
 					"name": "snkWriteParquet",
@@ -34,37 +35,18 @@
 				}
 			],
 			"scriptLines": [
-				"source(output(",
-				"          index as long,",
-				"          brand as string,",
-				"          name as string,",
-				"          bodyType as string,",
-				"          color as string,",
-				"          fuelType as string,",
-				"          year as double,",
-				"          mileage as double,",
-				"          transmission as string,",
-				"          power as double,",
-				"          price as long,",
-				"          vehicleConfiguration as string,",
-				"          engineName as string,",
-				"          engineDisplacement as string,",
-				"          date as string,",
-				"          location as string,",
-				"          link as string,",
-				"          parse_date as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
+				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: true,",
 				"     moveFiles: ['SQLSales','Processed'],",
 				"     rowUrlColumn: '_sourcefile',",
-				"     format: 'parquet') ~> srcSalesForceCSV",
-				"srcSalesForceCSV derive(each(match(type==\"string\"), $$ = lower(trim($$))),",
+				"     format: 'parquet') ~> srcOlistParquet",
+				"srcOlistParquet derive(each(match(type==\"string\"), $$ = lower(trim($$))),",
 				"          {_loadtime} = currentTimestamp()) ~> dcTrimLowerStrings",
 				"dcTrimLowerStrings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     rowUrlColumn:'_filename',",
+				"     format: 'parquet',",
+				"     rowUrlColumn:'_sourcefile',",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
