@@ -36,7 +36,7 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "feLkpCleanSF",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -55,7 +55,7 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Data flow1",
+							"name": "dfLkpCleanSF",
 							"type": "ExecuteDataFlow",
 							"dependsOn": [],
 							"policy": {
