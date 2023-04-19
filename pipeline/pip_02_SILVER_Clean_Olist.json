@@ -31,7 +31,7 @@
 							},
 							"snkWriteParquet": {
 								"Directory": {
-									"value": "pociobcleansed/@{pipeline().parameters.Schema}/@{pipeline().parameters.Table}",
+									"value": "@{pipeline().parameters.Schema}/@{pipeline().parameters.Table}",
 									"type": "Expression"
 								}
 							}
