@@ -5,6 +5,14 @@
 			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"Schema": {
+				"type": "string"
+			},
+			"Table": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "02_SILVER"
 		},
