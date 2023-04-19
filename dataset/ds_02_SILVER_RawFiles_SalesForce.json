@@ -18,6 +18,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().ptable",
+					"type": "Expression"
+				},
 				"folderPath": "SalesForce",
 				"fileSystem": "pociobrawlanding"
 			},

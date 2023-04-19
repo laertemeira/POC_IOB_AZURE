@@ -64,7 +64,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataflow": {
-									"referenceName": "df_02_SILVER_Clean_SalesForce_InLine",
+									"referenceName": "df_02_SILVER_Clean_SalesForce_gmd",
 									"type": "DataFlowReference",
 									"parameters": {
 										"ptable": {
