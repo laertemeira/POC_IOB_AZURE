@@ -1,0 +1,23 @@
+{
+	"name": "ds_02_SILVER_SalesForce_Parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "02_SILVER"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "SalesForce",
+				"fileSystem": "pociobcleansed"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
