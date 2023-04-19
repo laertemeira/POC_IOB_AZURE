@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "gmSalesForceCSV",
+				"name": "getMetadata",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -16,71 +16,24 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "ds_02_SILVER_RawFiles_SalesForce",
-						"type": "DatasetReference"
+						"referenceName": "ds_02_SILVER_RawFiles_Olist",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "SQLOlist",
+							"Table": "olist_customers_dataset"
+						}
 					},
 					"fieldList": [
 						"childItems"
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
 						"type": "DelimitedTextReadSettings"
 					}
-				}
-			},
-			{
-				"name": "fe_CleanSF",
-				"type": "ForEach",
-				"dependsOn": [
-					{
-						"activity": "gmSalesForceCSV",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@activity('gmSalesForceCSV').output.childItems",
-						"type": "Expression"
-					},
-					"isSequential": true,
-					"activities": [
-						{
-							"name": "df_CleanSF",
-							"type": "ExecuteDataFlow",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"dataflow": {
-									"referenceName": "df_02_SILVER_Clean_SalesForce_gmd",
-									"type": "DataFlowReference",
-									"parameters": {
-										"ptable": {
-											"value": "@activity('gmSalesForceCSV').output.childItems",
-											"type": "Expression"
-										}
-									}
-								},
-								"compute": {
-									"coreCount": 8,
-									"computeType": "General"
-								},
-								"traceLevel": "Fine"
-							}
-						}
-					]
 				}
 			}
 		],
