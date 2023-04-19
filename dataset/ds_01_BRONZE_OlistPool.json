@@ -1,0 +1,15 @@
+{
+	"name": "ds_01_BRONZE_OlistPool",
+	"properties": {
+		"folder": {
+			"name": "01_BRONZE"
+		},
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [],
+		"sqlPool": {
+			"referenceName": "Olist",
+			"type": "SqlPoolReference"
+		}
+	}
+}
