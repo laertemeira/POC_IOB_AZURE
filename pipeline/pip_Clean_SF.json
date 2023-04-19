@@ -32,7 +32,7 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "fe_CleanSF",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -48,9 +48,10 @@
 						"value": "@activity('gmSalesForceCSV').output.itemName",
 						"type": "Expression"
 					},
+					"isSequential": true,
 					"activities": [
 						{
-							"name": "Data flow1",
+							"name": "df_CleanSF",
 							"type": "ExecuteDataFlow",
 							"dependsOn": [],
 							"policy": {
