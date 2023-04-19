@@ -8,9 +8,9 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"dataset": {
-						"referenceName": "ds_02_SILVER_Read_SalesForce_CSV",
-						"type": "DatasetReference"
+					"linkedService": {
+						"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+						"type": "LinkedServiceReference"
 					},
 					"name": "srcSalesForceCSV"
 				}
@@ -37,19 +37,29 @@
 				"parameters{",
 				"     ptable as string",
 				"}",
-				"source(allowSchemaDrift: true,",
+				"source(useSchema: false,",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     inferDriftedColumnTypes: true,",
 				"     ignoreNoFilesFound: true,",
 				"     moveFiles: ['SalesForce','Processed'],",
 				"     rowUrlColumn: '_filename',",
-				"     wildcardPaths:['*.csv']) ~> srcSalesForceCSV",
+				"     format: 'delimited',",
+				"     fileSystem: 'pociobrawlanding',",
+				"     folderPath: 'SalesForce',",
+				"     fileName: ($ptable),",
+				"     rowDelimiter: '\\n',",
+				"     columnDelimiter: '|',",
+				"     escapeChar: '\\\\',",
+				"     quoteChar: '\\\"',",
+				"     columnNamesAsHeader: true,",
+				"     skipLines: 1) ~> srcSalesForceCSV",
 				"srcSalesForceCSV derive(each(match(type==\"string\"), $$ = lower(trim($$))),",
 				"          {_loadtime} = currentTimestamp()) ~> dcTrimLowerStrings",
 				"dcTrimLowerStrings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
-				"     filePattern:'CleanFile[n].parquet',",
+				"     partitionFileNames:[($ptable)],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
