@@ -1,5 +1,5 @@
 {
-	"name": "df_03_GOLD_Brand_Dimension",
+	"name": "df_02_SILVER_Clean_SQLSales",
 	"properties": {
 		"folder": {
 			"name": "02_SILVER"
@@ -12,33 +12,28 @@
 						"referenceName": "ds_02_SILVER_Read_SQLSales_Parquet",
 						"type": "DatasetReference"
 					},
-					"name": "srcSales"
+					"name": "srcSalesForceCSV"
 				}
 			],
 			"sinks": [
 				{
-					"linkedService": {
+					"dataset": {
+						"referenceName": "ds_02_SILVER_SalesForce_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "snkWriteParquet",
+					"rejectedDataLinkedService": {
 						"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 						"type": "LinkedServiceReference"
-					},
-					"name": "BrandDimension"
+					}
 				}
 			],
 			"transformations": [
 				{
-					"name": "selBrand"
-				},
-				{
-					"name": "rnkBrand"
-				},
-				{
-					"name": "aggBrand"
+					"name": "dcTrimLowerStrings"
 				}
 			],
 			"scriptLines": [
-				"parameters{",
-				"     ptable as string",
-				"}",
 				"source(output(",
 				"          index as long,",
 				"          brand as string,",
@@ -61,39 +56,21 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     inferDriftedColumnTypes: true,",
 				"     ignoreNoFilesFound: true,",
-				"     moveFiles: ['','Processed'],",
-				"     format: 'parquet',",
-				"     wildcardPaths:['cpyDeltaPipeSales*.parquet']) ~> srcSales",
-				"srcSales select(mapColumn(",
-				"          brand",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> selBrand",
-				"selBrand rank(asc(brand, true),",
-				"     output(brandRank as long),",
-				"     dense: true) ~> rnkBrand",
-				"rnkBrand aggregate(groupBy(brand),",
-				"     brandId = max(brandRank)) ~> aggBrand",
-				"aggBrand sink(allowSchemaDrift: true,",
+				"     moveFiles: ['SQLSales','Processed'],",
+				"     rowUrlColumn: '_sourcefile',",
+				"     format: 'parquet') ~> srcSalesForceCSV",
+				"srcSalesForceCSV derive(each(match(type==\"string\"), $$ = lower(trim($$))),",
+				"          {_loadtime} = currentTimestamp()) ~> dcTrimLowerStrings",
+				"dcTrimLowerStrings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     format: 'delta',",
-				"     fileSystem: 'pociobcleansed',",
-				"     folderPath: 'dimensions',",
-				"     mergeSchema: true,",
-				"     autoCompact: false,",
-				"     optimizedWrite: false,",
-				"     vacuum: 0,",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
+				"     rowUrlColumn:'_filename',",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> BrandDimension"
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1) ~> snkWriteParquet"
 			]
 		}
 	}

@@ -13,10 +13,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "@concat(pipeline().Pipeline, '.parquet')",
-					"type": "Expression"
-				},
 				"folderPath": "SQLSales",
 				"fileSystem": "pociobrawlanding"
 			},
