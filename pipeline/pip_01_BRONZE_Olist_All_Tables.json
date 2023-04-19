@@ -100,7 +100,7 @@
 									"parameters": {
 										"Schema": "SQLOlist",
 										"Table": {
-											"value": "@item()",
+											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
