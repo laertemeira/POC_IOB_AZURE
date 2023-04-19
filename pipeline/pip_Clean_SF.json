@@ -68,7 +68,7 @@
 									"type": "DataFlowReference",
 									"parameters": {
 										"ptable": {
-											"value": "@activity('gmSalesForceCSV').output.itemName",
+											"value": "@activity('gmSalesForceCSV').output.childItems",
 											"type": "Expression"
 										}
 									}
