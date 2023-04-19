@@ -21,10 +21,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "cpyDeltaPipeSales.parquet",
-					"type": "Expression"
-				},
 				"folderPath": "SQLSales",
 				"fileSystem": "pociobrawlanding"
 			},
