@@ -1,0 +1,23 @@
+{
+	"name": "ds_01_BRONZE_Ingest_Olist_Tables",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "01_BRONZE"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "SQLOlist/Customer",
+				"fileSystem": "pociobrawlanding"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
