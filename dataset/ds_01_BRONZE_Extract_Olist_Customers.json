@@ -8,9 +8,34 @@
 				"DBName": "Olist"
 			}
 		},
+		"folder": {
+			"name": "01_BRONZE"
+		},
 		"annotations": [],
 		"type": "AzureSqlDWTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "customer_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "customer_unique_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "customer_zip_code_prefix",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "customer_city",
+				"type": "nvarchar"
+			},
+			{
+				"name": "customer_state",
+				"type": "char"
+			}
+		],
 		"typeProperties": {
 			"tableName": "dbo.olist_customers_dataset"
 		}
