@@ -19,8 +19,14 @@
 						"referenceName": "ds_02_SILVER_RawFiles_Olist",
 						"type": "DatasetReference",
 						"parameters": {
-							"Schema": "SQLOlist",
-							"Table": "olist_customers_dataset"
+							"Schema": {
+								"value": "@pipeline().parameters.Schema",
+								"type": "Expression"
+							},
+							"Table": {
+								"value": "@pipeline().parameters.Table",
+								"type": "Expression"
+							}
 						}
 					},
 					"fieldList": [
@@ -35,12 +41,73 @@
 						"type": "DelimitedTextReadSettings"
 					}
 				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "getMetadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('getMetadata').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "dfCleanOlist",
+							"type": "ExecuteDataFlow",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataflow": {
+									"referenceName": "df_02_SILVER_Clean_SQL_Olist",
+									"type": "DataFlowReference",
+									"datasetParameters": {
+										"srcOlistParquet": {
+											"Schema": "SQLOlist/",
+											"Table": {
+												"value": "@item().Name",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								"compute": {
+									"coreCount": 8,
+									"computeType": "General"
+								},
+								"traceLevel": "Fine"
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
 			"DataFile": {
 				"type": "string",
 				"defaultValue": "@activity('getMetadata').output.itemName"
+			},
+			"Schema": {
+				"type": "string"
+			},
+			"Table": {
+				"type": "string"
 			}
 		},
 		"folder": {
