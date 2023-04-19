@@ -1,0 +1,18 @@
+{
+	"name": "ds_01_BRONZE_Extract_Olist_Customers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ws-pociob-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "Olist"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "dbo.olist_customers_dataset"
+		}
+	}
+}
