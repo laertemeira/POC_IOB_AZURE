@@ -63,7 +63,7 @@
 								"source": {
 									"type": "SqlPoolSource",
 									"sqlReaderQuery": {
-										"value": "@concat('select * from ', item())",
+										"value": "@concat('select * from ', item().value)",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00"
