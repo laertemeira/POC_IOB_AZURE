@@ -8,9 +8,9 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"linkedService": {
-						"referenceName": "ws-pociob-WorkspaceDefaultStorage",
-						"type": "LinkedServiceReference"
+					"dataset": {
+						"referenceName": "ds_02_SILVER_RawFiles_SalesForce",
+						"type": "DatasetReference"
 					},
 					"name": "srcSalesForceCSV"
 				}
@@ -37,22 +37,12 @@
 				"parameters{",
 				"     ptable as string",
 				"}",
-				"source(useSchema: false,",
-				"     allowSchemaDrift: true,",
+				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     inferDriftedColumnTypes: true,",
 				"     ignoreNoFilesFound: true,",
 				"     moveFiles: ['SalesForce','Processed'],",
 				"     rowUrlColumn: '_filename',",
-				"     format: 'delimited',",
-				"     fileSystem: 'pociobrawlanding',",
-				"     folderPath: 'SalesForce',",
-				"     fileName: (concat($ptable,\".csv\")),",
-				"     rowDelimiter: '\\n',",
-				"     columnDelimiter: '|',",
-				"     escapeChar: '\\\\',",
-				"     quoteChar: '\\\"',",
-				"     columnNamesAsHeader: false,",
 				"     skipLines: 1) ~> srcSalesForceCSV",
 				"srcSalesForceCSV derive(each(match(type==\"string\"), $$ = lower(trim($$))),",
 				"          {_loadtime} = currentTimestamp()) ~> dcTrimLowerStrings",
