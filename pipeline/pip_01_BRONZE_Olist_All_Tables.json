@@ -63,7 +63,7 @@
 								"source": {
 									"type": "SqlPoolSource",
 									"sqlReaderQuery": {
-										"value": "@concat('', 'select * from dbo.olist_customers_dataset')",
+										"value": "@concat('select * from ''', item().value, '''')\n",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00"
