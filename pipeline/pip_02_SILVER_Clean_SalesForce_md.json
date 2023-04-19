@@ -38,9 +38,9 @@
 			}
 		],
 		"parameters": {
-			"ptable": {
+			"DataFile": {
 				"type": "string",
-				"defaultValue": "@activity('gmSalesForceCSV').output.itemName"
+				"defaultValue": "@activity('getMetadata').output.itemName"
 			}
 		},
 		"folder": {
