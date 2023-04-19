@@ -16,8 +16,10 @@
 				"folderPath": "SalesForce",
 				"fileSystem": "pociobrawlanding"
 			},
-			"columnDelimiter": ",",
+			"columnDelimiter": "|",
+			"rowDelimiter": "\n",
 			"escapeChar": "\\",
+			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
 		"schema": []
