@@ -1,0 +1,44 @@
+{
+	"name": "pip_00_MasterOlist",
+	"properties": {
+		"activities": [
+			{
+				"name": "BRONZE_Olist_Tables",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pip_01_BRONZE_Olist_All_Tables",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "SILVER_Olist_Tables",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "BRONZE_Olist_Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pip_02_SILVER_Clean_Olist",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "00_MASTER"
+		},
+		"annotations": []
+	}
+}
