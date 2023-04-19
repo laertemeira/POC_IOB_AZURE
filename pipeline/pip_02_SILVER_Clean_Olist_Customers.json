@@ -79,18 +79,9 @@
 									"type": "DataFlowReference",
 									"datasetParameters": {
 										"srcOlistParquet": {
-											"Schema": {
-												"value": "@{pipeline().parameters.Schema}/@{pipeline().parameters.Table}",
-												"type": "Expression"
-											},
+											"Schema": "SQLOlist/",
 											"Table": {
 												"value": "@item().Name",
-												"type": "Expression"
-											}
-										},
-										"snkWriteParquet": {
-											"Directory": {
-												"value": "@{pipeline().parameters.Schema}/@{pipeline().parameters.Table}",
 												"type": "Expression"
 											}
 										}
