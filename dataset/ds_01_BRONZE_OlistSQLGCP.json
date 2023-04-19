@@ -1,0 +1,15 @@
+{
+	"name": "ds_01_BRONZE_OlistSQLGCP",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OlistSQLGCP",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "01_BRONZE"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	}
+}
