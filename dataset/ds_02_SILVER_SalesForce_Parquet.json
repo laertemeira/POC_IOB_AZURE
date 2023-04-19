@@ -5,6 +5,11 @@
 			"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"Directory": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "02_SILVER"
 		},
@@ -13,7 +18,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "SalesForce",
+				"folderPath": {
+					"value": "@dataset().Directory",
+					"type": "Expression"
+				},
 				"fileSystem": "pociobcleansed"
 			},
 			"compressionCodec": "snappy"
