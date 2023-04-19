@@ -18,7 +18,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "ds_02_SILVER_SalesForce_Parquet",
+						"referenceName": "ds_02_SILVER_SalesForce_CSV",
 						"type": "DatasetReference"
 					},
 					"name": "snkWriteParquet",
@@ -45,17 +45,13 @@
 				"          {_loadtime} = currentTimestamp()) ~> dcTrimLowerStrings",
 				"dcTrimLowerStrings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     format: 'parquet',",
 				"     rowUrlColumn:'_filename',",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     saveOrder: 1,",
-				"     outputAssertFailedRows: true,",
-				"     assertFailure_fileSystem: 'pociobcleansed',",
-				"     assertFailure_folderPath: 'fail') ~> snkWriteParquet"
+				"     saveOrder: 1) ~> snkWriteParquet"
 			]
 		}
 	}
