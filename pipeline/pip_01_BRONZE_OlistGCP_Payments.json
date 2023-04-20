@@ -48,6 +48,68 @@
 					},
 					"translator": {
 						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "order_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "order_id",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "payment_sequential",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "payment_sequential",
+									"type": "Int32",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "payment_type",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "payment_type",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "payment_installments",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "payment_installments",
+									"type": "Int32",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "payment_value",
+									"type": "Single",
+									"physicalType": "real"
+								},
+								"sink": {
+									"name": "payment_value",
+									"type": "Single",
+									"physicalType": "FLOAT"
+								}
+							}
+						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
@@ -60,7 +122,7 @@
 						"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
 						"type": "DatasetReference",
 						"parameters": {
-							"cw_table": "olist_payments_dataset"
+							"cw_table": "olist_order_payments_dataset"
 						}
 					}
 				],
@@ -69,7 +131,7 @@
 						"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
 						"type": "DatasetReference",
 						"parameters": {
-							"cw_fileName": "olist_payments_dataset"
+							"cw_fileName": "olist_order_payments_dataset"
 						}
 					}
 				]
