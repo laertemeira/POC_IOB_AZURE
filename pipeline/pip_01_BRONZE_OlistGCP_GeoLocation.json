@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "cpy_Customers",
+				"name": "cpy_GeoLocation",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -51,60 +51,60 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "customer_id",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "customer_id",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "customer_unique_id",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "customer_unique_id",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "customer_zip_code_prefix",
+									"name": "geolocation_zip_code_prefix",
 									"type": "Int32",
 									"physicalType": "int"
 								},
 								"sink": {
-									"name": "customer_zip_code_prefix",
+									"name": "geolocation_zip_code_prefix",
 									"type": "Int32",
 									"physicalType": "INT_32"
 								}
 							},
 							{
 								"source": {
-									"name": "customer_city",
+									"name": "geolocation_lat",
+									"type": "Single",
+									"physicalType": "real"
+								},
+								"sink": {
+									"name": "geolocation_lat",
+									"type": "Single",
+									"physicalType": "FLOAT"
+								}
+							},
+							{
+								"source": {
+									"name": "geolocation_lng",
+									"type": "Single",
+									"physicalType": "real"
+								},
+								"sink": {
+									"name": "geolocation_lng",
+									"type": "Single",
+									"physicalType": "FLOAT"
+								}
+							},
+							{
+								"source": {
+									"name": "geolocation_city",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "customer_city",
+									"name": "geolocation_city",
 									"type": "String",
 									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
-									"name": "customer_state",
+									"name": "geolocation_state",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "customer_state",
+									"name": "geolocation_state",
 									"type": "String",
 									"physicalType": "UTF8"
 								}
@@ -122,7 +122,7 @@
 						"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
 						"type": "DatasetReference",
 						"parameters": {
-							"cw_table": "olist_customers_dataset"
+							"cw_table": "olist_geolocation_dataset"
 						}
 					}
 				],
@@ -131,7 +131,7 @@
 						"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
 						"type": "DatasetReference",
 						"parameters": {
-							"cw_fileName": "olist_customers_dataset"
+							"cw_fileName": "olist_geolocation_dataset"
 						}
 					}
 				]
