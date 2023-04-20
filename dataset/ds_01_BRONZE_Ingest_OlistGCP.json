@@ -1,5 +1,5 @@
 {
-	"name": "ds_01_BRONZER_Ingest_OlistGCP",
+	"name": "ds_01_BRONZE_Ingest_OlistGCP",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ws-pociob-WorkspaceDefaultStorage",

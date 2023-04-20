@@ -76,7 +76,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "SourceDataset_3b5",
+									"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
 									"type": "DatasetReference",
 									"parameters": {
 										"cw_table": "@item().source.table"
@@ -85,7 +85,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "DestinationDataset_3b5",
+									"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
 									"type": "DatasetReference",
 									"parameters": {
 										"cw_fileName": "@item().destination.fileName"
