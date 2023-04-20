@@ -2,7 +2,7 @@
 	"name": "df_03_GOLD_Brand_Dimension",
 	"properties": {
 		"folder": {
-			"name": "02_SILVER"
+			"name": "OUTROS"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
