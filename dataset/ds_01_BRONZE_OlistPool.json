@@ -2,7 +2,7 @@
 	"name": "ds_01_BRONZE_OlistPool",
 	"properties": {
 		"folder": {
-			"name": "01_BRONZE"
+			"name": "OUTROS"
 		},
 		"annotations": [],
 		"type": "SqlPoolTable",

@@ -6,7 +6,7 @@
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
-			"name": "01_BRONZE"
+			"name": "01_BRONZE_OLIST"
 		},
 		"annotations": [],
 		"type": "SqlServerTable",
