@@ -26,6 +26,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
+						"isolationLevel": "ReadCommitted",
 						"partitionOption": "None"
 					},
 					"sink": {
@@ -56,6 +57,68 @@
 					},
 					"translator": {
 						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "customer_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "customer_id",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "customer_unique_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "customer_unique_id",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "customer_zip_code_prefix",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "customer_zip_code_prefix",
+									"type": "Int32",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "customer_city",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "customer_city",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "customer_state",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "customer_state",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							}
+						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
@@ -68,7 +131,7 @@
 						"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
 						"type": "DatasetReference",
 						"parameters": {
-							"cw_table": "@item().source.table"
+							"cw_table": "olist_customers_dataset"
 						}
 					}
 				],
@@ -77,7 +140,7 @@
 						"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
 						"type": "DatasetReference",
 						"parameters": {
-							"cw_fileName": "@item().destination.fileName"
+							"cw_fileName": "olist_customers_dataset"
 						}
 					}
 				]
