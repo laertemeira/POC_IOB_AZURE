@@ -1,0 +1,19 @@
+{
+	"name": "ds_01_BRONZE_OlistSQLGCP_SysObjects",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OlistSQLGCP",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "01_BRONZE"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "sys",
+			"table": "sysobjects"
+		}
+	}
+}
