@@ -15,11 +15,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "@dataset().cw_fileName",
+				"folderPath": {
+					"value": "BRONZE_OLIST/@{dataset().cw_fileName}",
 					"type": "Expression"
 				},
-				"folderPath": "SQLOlist",
 				"fileSystem": "pociobrawlanding"
 			},
 			"compressionCodec": "snappy"
