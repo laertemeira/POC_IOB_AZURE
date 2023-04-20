@@ -1,0 +1,37 @@
+{
+	"name": "df_02_SILVER_Clean_OlistGCP_Delta",
+	"properties": {
+		"folder": {
+			"name": "02_SILVER_OLIST"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_02_SILVER_Read_OlistGCP_Parquet",
+						"type": "DatasetReference"
+					},
+					"name": "srcOlistParquet",
+					"description": "Import data from Olist Parquet BRONZE"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "dcTrimLowerStrings"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: true,",
+				"     moveFiles: ['BRONZE_OLIST','BRONZE_OLIST/Processed'],",
+				"     rowUrlColumn: '_sourcefile',",
+				"     format: 'parquet') ~> srcOlistParquet",
+				"srcOlistParquet derive(each(match(type==\"string\"), $$ = lower(trim($$))),",
+				"          {_loadtime} = currentTimestamp()) ~> dcTrimLowerStrings"
+			]
+		}
+	}
+}
