@@ -16,7 +16,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@{dataset().cw_fileName}",
+					"value": "@concat(dataset().cw_fileName, '.parquet')",
 					"type": "Expression"
 				},
 				"folderPath": {
