@@ -1,0 +1,83 @@
+{
+	"name": "pip_01_BRONZE_OlistGCP_Payments",
+	"properties": {
+		"activities": [
+			{
+				"name": "cpy_Payments",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"isolationLevel": "ReadCommitted",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": false,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "pociobrawlanding/SQLOlist/log"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_table": "olist_payments_dataset"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
+						"type": "DatasetReference",
+						"parameters": {
+							"cw_fileName": "olist_payments_dataset"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "01_BRONZE_OLIST"
+		},
+		"annotations": []
+	}
+}
