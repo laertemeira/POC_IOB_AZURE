@@ -10,6 +10,9 @@
 				"type": "String"
 			}
 		},
+		"folder": {
+			"name": "01_BRONZE_OLIST"
+		},
 		"annotations": [],
 		"type": "Parquet",
 		"typeProperties": {
