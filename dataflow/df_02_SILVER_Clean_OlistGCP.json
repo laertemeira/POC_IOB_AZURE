@@ -44,7 +44,7 @@
 				"     rowUrlColumn: '_sourcefile',",
 				"     format: 'parquet') ~> srcOlistParquet",
 				"srcOlistParquet derive(each(match(type==\"string\" && name!=\"_sourcefile\"), $$ = lower(trim($$))),",
-				"          {_loadtime} = $FilePrefix + '_' + toString(currentTimestamp(),'yyyyMMddHHmmss')) ~> dcTrimLowerStrings",
+				"          {_watermark} = $FilePrefix + '_' + toString(currentTimestamp(),'yyyyMMddHHmmss')) ~> dcTrimLowerStrings",
 				"dcTrimLowerStrings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
