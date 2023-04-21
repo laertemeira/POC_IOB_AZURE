@@ -48,7 +48,6 @@
 				"dcTrimLowerStrings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
-				"     rowUrlColumn:'',",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
