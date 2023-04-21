@@ -45,7 +45,6 @@
 				"dcTrimLowerStrings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
-				"     filePattern:(concat($File, '.parquet')),",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
