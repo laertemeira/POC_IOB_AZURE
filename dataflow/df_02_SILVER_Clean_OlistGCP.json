@@ -22,11 +22,7 @@
 						"referenceName": "ds_02_SILVER_Write_OlistGCP_Parquet",
 						"type": "DatasetReference"
 					},
-					"name": "snkWriteParquet",
-					"rejectedDataLinkedService": {
-						"referenceName": "ws-pociob-WorkspaceDefaultStorage",
-						"type": "LinkedServiceReference"
-					}
+					"name": "snkOlistParquet2"
 				}
 			],
 			"transformations": [
@@ -48,12 +44,12 @@
 				"dcTrimLowerStrings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
+				"     rowUrlColumn:'_watermark',",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     saveOrder: 1) ~> snkWriteParquet"
+				"     skipDuplicateMapOutputs: true) ~> snkOlistParquet2"
 			]
 		}
 	}
