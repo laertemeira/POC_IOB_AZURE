@@ -48,6 +48,7 @@
 				"dcTrimLowerStrings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
+				"     partitionFileNames:[($FilePrefix)],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
