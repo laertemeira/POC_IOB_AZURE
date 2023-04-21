@@ -22,6 +22,10 @@
 							"FilePrefix": {
 								"value": "'@{pipeline().parameters.FileName}'",
 								"type": "Expression"
+							},
+							"Directory": {
+								"value": "'@{pipeline().parameters.Directory}'",
+								"type": "Expression"
 							}
 						},
 						"datasetParameters": {
@@ -50,6 +54,10 @@
 			"FileName": {
 				"type": "string",
 				"defaultValue": "olist_customers_dataset"
+			},
+			"Directory": {
+				"type": "string",
+				"defaultValue": "SILVER_OLIST"
 			}
 		},
 		"folder": {
