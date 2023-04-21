@@ -38,7 +38,6 @@
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: true,",
-				"     moveFiles: ['BRONZE_OLIST','BRONZE_OLIST/Processed'],",
 				"     rowUrlColumn: '_sourcefile',",
 				"     format: 'parquet') ~> srcOlistParquet",
 				"srcOlistParquet derive(each(match(type==\"string\"), $$ = lower(trim($$))),",
