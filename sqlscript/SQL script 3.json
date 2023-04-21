@@ -2,7 +2,7 @@
 	"name": "SQL script 3",
 	"properties": {
 		"content": {
-			"query": "SELECT  top 100 *\nFROM    dbo.olist_orders\nORDER   by 1",
+			"query": "SELECT  distinct _sourcefile\nFROM    dbo.olist_orders\nORDER   by 1",
 			"metadata": {
 				"language": "sql"
 			},
