@@ -1,5 +1,5 @@
 {
-	"name": "Pipeline 1",
+	"name": "pip_02_SILVER_Clean_OlistGCP_Customers",
 	"properties": {
 		"activities": [
 			{
@@ -20,7 +20,11 @@
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"srcOlistParquet": {
-								"Schema": "BRONZE_OLIST"
+								"Schema": "BRONZE_OLIST",
+								"Table": "olist_customers_dataset"
+							},
+							"snkWriteParquet": {
+								"Directory": "BRONZE_OLIST"
 							}
 						}
 					},
