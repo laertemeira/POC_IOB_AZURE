@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Clean Customers",
+				"name": "Clean OLIST",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
