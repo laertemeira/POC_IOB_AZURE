@@ -33,7 +33,7 @@
 								}
 							},
 							"snkOlistParquet2": {
-								"Directory": "BRONZE_OLIST",
+								"Directory": "SILVER_OLIST",
 								"File": "@pipeline().parameters.FileName"
 							}
 						}
