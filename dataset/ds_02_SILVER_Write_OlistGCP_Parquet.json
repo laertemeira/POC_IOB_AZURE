@@ -25,10 +25,7 @@
 					"value": "@concat(dataset().FileName,'.parquet')",
 					"type": "Expression"
 				},
-				"folderPath": {
-					"value": "@dataset().Directory",
-					"type": "Expression"
-				},
+				"folderPath": "SILVER_OLIST",
 				"fileSystem": "pociobcleansed"
 			},
 			"compressionCodec": "snappy"
