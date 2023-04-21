@@ -35,9 +35,6 @@
 				}
 			],
 			"scriptLines": [
-				"parameters{",
-				"     File as string",
-				"}",
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: true,",
