@@ -7,6 +7,10 @@
 			"metadata": "Workspace name",
 			"defaultValue": "ws-pociob"
 		},
+		"OlistSQLGCP_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'OlistSQLGCP'"
+		},
 		"SQLCarSales_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SQLCarSales'"
@@ -36,19 +40,11 @@
 			"type": "string",
 			"defaultValue": "https://pocioblake.dfs.core.windows.net"
 		},
-		"Trigger_7ig_properties_cpyDeltaPipeSales_parameters_windowStart": {
-			"type": "string",
-			"defaultValue": "@{addhours(trigger().scheduledTime, -24000)}"
-		},
-		"Trigger_7ig_properties_cpyDeltaPipeSales_parameters_windowEnd": {
-			"type": "string",
-			"defaultValue": "@trigger().scheduledTime"
-		},
-		"Trigger_j4z_properties_cpySalesForceCampaign_parameters_windowStart": {
+		"Trigger_j4z_properties_pip_01_BRONZE_SalesForce_parameters_windowStart": {
 			"type": "string",
 			"defaultValue": "@{addminutes(trigger().scheduledTime, -15)}"
 		},
-		"Trigger_j4z_properties_cpySalesForceCampaign_parameters_windowEnd": {
+		"Trigger_j4z_properties_pip_01_BRONZE_SalesForce_parameters_windowEnd": {
 			"type": "string",
 			"defaultValue": "@trigger().scheduledTime"
 		}
@@ -58,14 +54,105 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('workspaceName'), '/cpyDeltaPipeSales')]",
+			"name": "[concat(parameters('workspaceName'), '/pip_02_SILVER_Clean_OlistGCP')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"description": "task de test",
 				"activities": [
 					{
-						"name": "pipSQLCarSales",
+						"name": "Clean OLIST",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_02_SILVER_Clean_OlistGCP",
+								"type": "DataFlowReference",
+								"parameters": {
+									"FilePrefix": {
+										"value": "'@{pipeline().parameters.FileName}'",
+										"type": "Expression"
+									},
+									"Directory": {
+										"value": "'@{pipeline().parameters.TargetDirectory}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"srcOlistParquet": {
+										"Directory": {
+											"value": "@pipeline().parameters.SourceDirectory",
+											"type": "Expression"
+										},
+										"File": {
+											"value": "@pipeline().parameters.FileName",
+											"type": "Expression"
+										}
+									},
+									"snkOlistParquet2": {
+										"Directory": {
+											"value": "@pipeline().parameters.TargetDirectory",
+											"type": "Expression"
+										},
+										"File": {
+											"value": "@pipeline().parameters.FileName",
+											"type": "Expression"
+										}
+									}
+								},
+								"linkedServiceParameters": {}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"FileName": {
+						"type": "string"
+					},
+					"TargetDirectory": {
+						"type": "string",
+						"defaultValue": "SILVER_OLIST"
+					},
+					"SourceDirectory": {
+						"type": "string",
+						"defaultValue": "BRONZE_OLIST"
+					}
+				},
+				"folder": {
+					"name": "02_SILVER_OLIST"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/dataflows/df_02_SILVER_Clean_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/pip_01_BRONZE_OlistGCP_CategoryName')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "cpy_Category",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -75,24 +162,11 @@
 							"secureOutput": false,
 							"secureInput": false
 						},
-						"userProperties": [
-							{
-								"name": "Source",
-								"value": "dbo.sales"
-							},
-							{
-								"name": "Destination",
-								"value": "pociobprimaryfs//carsales-raw"
-							}
-						],
+						"userProperties": [],
 						"typeProperties": {
 							"source": {
 								"type": "SqlServerSource",
-								"sqlReaderQuery": {
-									"value": "select * from [dbo].[sales] \nwhere cast(date as DATE) >= '@{formatDateTime(pipeline().parameters.windowStart, 'yyyy-MM-dd HH:mm' )}' \nAND cast(date as DATE) < '@{formatDateTime(pipeline().parameters.windowEnd, 'yyyy-MM-dd HH:mm' )}'",
-									"type": "Expression"
-								},
-								"isolationLevel": "ReadUncommitted",
+								"isolationLevel": "ReadCommitted",
 								"partitionOption": "None"
 							},
 							"sink": {
@@ -106,7 +180,7 @@
 							},
 							"enableStaging": false,
 							"enableSkipIncompatibleRow": true,
-							"validateDataConsistency": true,
+							"validateDataConsistency": false,
 							"logSettings": {
 								"enableCopyActivityLog": true,
 								"copyActivityLogSettings": {
@@ -118,11 +192,37 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SQLOlist/log"
 								}
 							},
 							"translator": {
 								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "product_category_name",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "product_category_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "product_category_name_english",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "product_category_name_english",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									}
+								],
 								"typeConversion": true,
 								"typeConversionSettings": {
 									"allowDataTruncation": true,
@@ -132,16 +232,20 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSQLSales",
+								"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
 								"type": "DatasetReference",
-								"parameters": {}
+								"parameters": {
+									"cw_table": "product_category_name_translation"
+								}
 							}
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesParquet",
+								"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
 								"type": "DatasetReference",
-								"parameters": {}
+								"parameters": {
+									"cw_fileName": "product_category_name_translation"
+								}
 							}
 						]
 					}
@@ -150,39 +254,1721 @@
 					"elapsedTimeMetric": {},
 					"cancelAfter": {}
 				},
-				"parameters": {
-					"windowStart": {
-						"type": "String"
-					},
-					"windowEnd": {
-						"type": "String"
-					}
+				"folder": {
+					"name": "01_BRONZE_OLIST"
 				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/dsSQLSales')]",
-				"[concat(variables('workspaceId'), '/datasets/tgtSalesParquet')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Extract_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Ingest_OlistGCP')]",
 				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/cpySalesForceCampaign')]",
+			"name": "[concat(parameters('workspaceName'), '/pip_01_BRONZE_OlistGCP_Customers')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy1_pociobprimaryfs_Campaign_csv",
+						"name": "cpy_Customers",
 						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"isolationLevel": "ReadCommitted",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"validateDataConsistency": false,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+										"type": "LinkedServiceReference"
+									},
+									"path": "pociobrawlanding/SQLOlist/log"
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "customer_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "customer_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "customer_unique_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "customer_unique_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "customer_zip_code_prefix",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "customer_zip_code_prefix",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "customer_city",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "customer_city",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "customer_state",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "customer_state",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_table": "olist_customers_dataset"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_fileName": "olist_customers_dataset"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "01_BRONZE_OLIST"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Extract_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Ingest_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/pip_01_BRONZE_OlistGCP_GeoLocation')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "cpy_GeoLocation",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"isolationLevel": "ReadCommitted",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"validateDataConsistency": false,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+										"type": "LinkedServiceReference"
+									},
+									"path": "pociobrawlanding/SQLOlist/log"
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "geolocation_zip_code_prefix",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "geolocation_zip_code_prefix",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "geolocation_lat",
+											"type": "Single",
+											"physicalType": "real"
+										},
+										"sink": {
+											"name": "geolocation_lat",
+											"type": "Single",
+											"physicalType": "FLOAT"
+										}
+									},
+									{
+										"source": {
+											"name": "geolocation_lng",
+											"type": "Single",
+											"physicalType": "real"
+										},
+										"sink": {
+											"name": "geolocation_lng",
+											"type": "Single",
+											"physicalType": "FLOAT"
+										}
+									},
+									{
+										"source": {
+											"name": "geolocation_city",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "geolocation_city",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "geolocation_state",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "geolocation_state",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_table": "olist_geolocation_dataset"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_fileName": "olist_geolocation_dataset"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "01_BRONZE_OLIST"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Extract_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Ingest_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/pip_01_BRONZE_OlistGCP_OrderItems')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "cpy_OrderItems",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"isolationLevel": "ReadCommitted",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"validateDataConsistency": false,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+										"type": "LinkedServiceReference"
+									},
+									"path": "pociobrawlanding/SQLOlist/log"
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "order_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "order_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "order_item_id",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "order_item_id",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "product_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "product_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "seller_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "seller_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "shipping_limit_date",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "shipping_limit_date",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "price",
+											"type": "Single",
+											"physicalType": "real"
+										},
+										"sink": {
+											"name": "price",
+											"type": "Single",
+											"physicalType": "FLOAT"
+										}
+									},
+									{
+										"source": {
+											"name": "freight_value",
+											"type": "Single",
+											"physicalType": "real"
+										},
+										"sink": {
+											"name": "freight_value",
+											"type": "Single",
+											"physicalType": "FLOAT"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_table": "olist_order_items_dataset"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_fileName": "olist_order_items_dataset"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "01_BRONZE_OLIST"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Extract_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Ingest_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/pip_01_BRONZE_OlistGCP_OrderReviews')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "cpy_OrderReviews",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"isolationLevel": "ReadCommitted",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"validateDataConsistency": false,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+										"type": "LinkedServiceReference"
+									},
+									"path": "pociobrawlanding/SQLOlist/log"
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "review_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "review_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "order_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "order_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "review_score",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "review_score",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "review_comment_title",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "review_comment_title",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "review_comment_message",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "review_comment_message",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "review_creation_date",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "review_creation_date",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "review_answer_timestamp",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "review_answer_timestamp",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_table": "olist_order_reviews_dataset"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_fileName": "olist_order_reviews_dataset"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "01_BRONZE_OLIST"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Extract_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Ingest_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/pip_01_BRONZE_OlistGCP_Orders')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "cpy_Orders",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"isolationLevel": "ReadCommitted",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"validateDataConsistency": false,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+										"type": "LinkedServiceReference"
+									},
+									"path": "pociobrawlanding/SQLOlist/log"
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "order_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "order_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "customer_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "customer_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "order_status",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "order_status",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "order_purchase_timestamp",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "order_purchase_timestamp",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "order_approved_at",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "order_approved_at",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "order_delivered_carrier_date",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "order_delivered_carrier_date",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "order_delivered_customer_date",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "order_delivered_customer_date",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "order_estimated_delivery_date",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "order_estimated_delivery_date",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_table": "olist_orders_dataset"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_fileName": "olist_orders_dataset"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "01_BRONZE_OLIST"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Extract_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Ingest_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/pip_01_BRONZE_OlistGCP_Payments')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "cpy_Payments",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"isolationLevel": "ReadCommitted",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"validateDataConsistency": false,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+										"type": "LinkedServiceReference"
+									},
+									"path": "pociobrawlanding/SQLOlist/log"
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "order_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "order_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "payment_sequential",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "payment_sequential",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "payment_type",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "payment_type",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "payment_installments",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "payment_installments",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "payment_value",
+											"type": "Single",
+											"physicalType": "real"
+										},
+										"sink": {
+											"name": "payment_value",
+											"type": "Single",
+											"physicalType": "FLOAT"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_table": "olist_order_payments_dataset"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_fileName": "olist_order_payments_dataset"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "01_BRONZE_OLIST"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Extract_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Ingest_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/pip_01_BRONZE_OlistGCP_Products')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "cpy_Products",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"isolationLevel": "ReadCommitted",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"validateDataConsistency": false,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+										"type": "LinkedServiceReference"
+									},
+									"path": "pociobrawlanding/SQLOlist/log"
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "product_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "product_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "product_category_name",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "product_category_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "product_name_lenght",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "product_name_lenght",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "product_description_lenght",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "product_description_lenght",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "product_photos_qty",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "product_photos_qty",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "product_weight_g",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "product_weight_g",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "product_length_cm",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "product_length_cm",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "product_height_cm",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "product_height_cm",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "product_width_cm",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "product_width_cm",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_table": "olist_products_dataset"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_fileName": "olist_products_dataset"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "01_BRONZE_OLIST"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Extract_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Ingest_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/pip_01_BRONZE_OlistGCP_Sellers')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "cpy_Sellers",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"isolationLevel": "ReadCommitted",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"validateDataConsistency": false,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+										"type": "LinkedServiceReference"
+									},
+									"path": "pociobrawlanding/SQLOlist/log"
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "seller_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "seller_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "seller_zip_code_prefix",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "seller_zip_code_prefix",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "seller_city",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "seller_city",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "seller_state",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "seller_state",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_table": "olist_sellers_dataset"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cw_fileName": "olist_sellers_dataset"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "01_BRONZE_OLIST"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Extract_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Ingest_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/pip_01_BRONZE_Olist_All_Tables')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "lkpAllOlistTables",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlDWSource",
+								"sqlReaderQuery": "select  name from sys.sysobjects where xtype = 'U'",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ds_01_BRONZE_Extract_Olist_SysObjects",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "feOlistTables",
+						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "Copy4_pociobprimaryfs_CampaignHistory_csv",
+								"activity": "lkpAllOlistTables",
 								"dependencyConditions": [
 									"Succeeded"
 								]
 							}
 						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('lkpAllOlistTables').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Copy data1",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
+											"type": "DatasetReference",
+											"parameters": {
+												"cw_table": {
+													"value": "@item()",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_01_BRONZE_Ingest_Olist_Tables",
+											"type": "DatasetReference",
+											"parameters": {
+												"Schema": "SQLOlist",
+												"Table": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "01_BRONZE_OLIST"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Extract_Olist_SysObjects')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Ingest_Olist_Tables')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Extract_OlistGCP')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/pip_01_BRONZE_SQLOlist_AllTabs')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEach_3b5",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.cw_items",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Copy_3b5",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [
+										{
+											"name": "Source",
+											"value": "dbo.@{item().source.table}"
+										},
+										{
+											"name": "Destination",
+											"value": "pociobrawlanding/SQLOlist/@{item().destination.fileName}"
+										}
+									],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"enableSkipIncompatibleRow": true,
+										"validateDataConsistency": false,
+										"logSettings": {
+											"enableCopyActivityLog": true,
+											"copyActivityLogSettings": {
+												"logLevel": "Warning",
+												"enableReliableLogging": false
+											},
+											"logLocationSettings": {
+												"linkedServiceName": {
+													"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+													"type": "LinkedServiceReference"
+												},
+												"path": "pociobrawlanding/SQLOlist/log"
+											}
+										},
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
+											"type": "DatasetReference",
+											"parameters": {
+												"cw_table": "@item().source.table"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_01_BRONZE_Ingest_OlistGCP",
+											"type": "DatasetReference",
+											"parameters": {
+												"cw_fileName": "@item().destination.fileName"
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"cw_items": {
+						"type": "Array",
+						"defaultValue": [
+							{
+								"source": {
+									"table": "olist_customers_dataset"
+								},
+								"destination": {
+									"fileName": "dboolist_customers_dataset.csv"
+								}
+							},
+							{
+								"source": {
+									"table": "olist_geolocation_dataset"
+								},
+								"destination": {
+									"fileName": "dboolist_geolocation_dataset.csv"
+								}
+							},
+							{
+								"source": {
+									"table": "olist_order_items_dataset"
+								},
+								"destination": {
+									"fileName": "dboolist_order_items_dataset.csv"
+								}
+							},
+							{
+								"source": {
+									"table": "olist_order_payments_dataset"
+								},
+								"destination": {
+									"fileName": "dboolist_order_payments_dataset.csv"
+								}
+							},
+							{
+								"source": {
+									"table": "olist_order_reviews_dataset"
+								},
+								"destination": {
+									"fileName": "dboolist_order_reviews_dataset.csv"
+								}
+							},
+							{
+								"source": {
+									"table": "olist_orders_dataset"
+								},
+								"destination": {
+									"fileName": "dboolist_orders_dataset.csv"
+								}
+							},
+							{
+								"source": {
+									"table": "olist_products_dataset"
+								},
+								"destination": {
+									"fileName": "dboolist_products_dataset.csv"
+								}
+							},
+							{
+								"source": {
+									"table": "olist_sellers_dataset"
+								},
+								"destination": {
+									"fileName": "dboolist_sellers_dataset.csv"
+								}
+							},
+							{
+								"source": {
+									"table": "product_category_name_translation"
+								},
+								"destination": {
+									"fileName": "dboproduct_category_name_translation.csv"
+								}
+							}
+						]
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Extract_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Ingest_OlistGCP')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/pip_01_BRONZE_SalesForce')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "cpyCampaign",
+						"type": "Copy",
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -234,7 +2020,7 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SalesForce"
 								}
 							},
 							"translator": {
@@ -248,7 +2034,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSFSource",
+								"referenceName": "ds_01_BRONZE_Extract_SalesForce",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_objectApiName": "Campaign"
@@ -257,7 +2043,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesForceCSV",
+								"referenceName": "ds_01_BRONZE_Ingest_SalesForce_CSV",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_fileName": "Campaign.csv"
@@ -266,16 +2052,9 @@
 						]
 					},
 					{
-						"name": "Copy3_pociobprimaryfs_CampaignFeed_csv",
+						"name": "cpyCampaignFeed",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Copy5_pociobprimaryfs_CampaignMember_csv",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -323,7 +2102,7 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SalesForce"
 								}
 							},
 							"translator": {
@@ -337,7 +2116,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSFSource",
+								"referenceName": "ds_01_BRONZE_Extract_SalesForce",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_objectApiName": "CampaignFeed"
@@ -346,7 +2125,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesForceCSV",
+								"referenceName": "ds_01_BRONZE_Ingest_SalesForce_CSV",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_fileName": "CampaignFeed.csv"
@@ -355,16 +2134,9 @@
 						]
 					},
 					{
-						"name": "Copy4_pociobprimaryfs_CampaignHistory_csv",
+						"name": "cpyCampaignHistory",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Copy3_pociobprimaryfs_CampaignFeed_csv",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -412,7 +2184,7 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SalesForce"
 								}
 							},
 							"translator": {
@@ -426,7 +2198,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSFSource",
+								"referenceName": "ds_01_BRONZE_Extract_SalesForce",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_objectApiName": "CampaignHistory"
@@ -435,7 +2207,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesForceCSV",
+								"referenceName": "ds_01_BRONZE_Ingest_SalesForce_CSV",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_fileName": "CampaignHistory.csv"
@@ -444,7 +2216,7 @@
 						]
 					},
 					{
-						"name": "Copy5_pociobprimaryfs_CampaignMember_csv",
+						"name": "cpyCampaignMember",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -494,7 +2266,7 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SalesForce"
 								}
 							},
 							"translator": {
@@ -508,7 +2280,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSFSource",
+								"referenceName": "ds_01_BRONZE_Extract_SalesForce",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_objectApiName": "CampaignMember"
@@ -517,7 +2289,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesForceCSV",
+								"referenceName": "ds_01_BRONZE_Ingest_SalesForce_CSV",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_fileName": "CampaignMember.csv"
@@ -526,16 +2298,9 @@
 						]
 					},
 					{
-						"name": "Copy7_pociobprimaryfs_CampaignMemberStatus_csv",
+						"name": "cpyCampaignMemberStatus",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Copy1_pociobprimaryfs_Campaign_csv",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -583,7 +2348,7 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SalesForce"
 								}
 							},
 							"translator": {
@@ -597,7 +2362,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSFSource",
+								"referenceName": "ds_01_BRONZE_Extract_SalesForce",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_objectApiName": "CampaignMemberStatus"
@@ -606,7 +2371,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesForceCSV",
+								"referenceName": "ds_01_BRONZE_Ingest_SalesForce_CSV",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_fileName": "CampaignMemberStatus.csv"
@@ -615,16 +2380,9 @@
 						]
 					},
 					{
-						"name": "Copy9_pociobprimaryfs_CampaignShare_csv",
+						"name": "cpyCampaignShare",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Copy7_pociobprimaryfs_CampaignMemberStatus_csv",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -672,7 +2430,7 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SalesForce"
 								}
 							},
 							"translator": {
@@ -686,7 +2444,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSFSource",
+								"referenceName": "ds_01_BRONZE_Extract_SalesForce",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_objectApiName": "CampaignShare"
@@ -695,7 +2453,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesForceCSV",
+								"referenceName": "ds_01_BRONZE_Ingest_SalesForce_CSV",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_fileName": "CampaignShare.csv"
@@ -704,16 +2462,9 @@
 						]
 					},
 					{
-						"name": "Copy10_pociobprimaryfs_Order_csv",
+						"name": "cpyOrder",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Copy9_pociobprimaryfs_CampaignShare_csv",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -761,7 +2512,7 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SalesForce"
 								}
 							},
 							"translator": {
@@ -775,7 +2526,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSFSource",
+								"referenceName": "ds_01_BRONZE_Extract_SalesForce",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_objectApiName": "Order"
@@ -784,7 +2535,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesForceCSV",
+								"referenceName": "ds_01_BRONZE_Ingest_SalesForce_CSV",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_fileName": "Order.csv"
@@ -793,16 +2544,9 @@
 						]
 					},
 					{
-						"name": "Copy12_pociobprimaryfs_OrderFeed_csv",
+						"name": "cpyOrderFeed",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Copy10_pociobprimaryfs_Order_csv",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -850,7 +2594,7 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SalesForce"
 								}
 							},
 							"translator": {
@@ -864,7 +2608,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSFSource",
+								"referenceName": "ds_01_BRONZE_Extract_SalesForce",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_objectApiName": "OrderFeed"
@@ -873,7 +2617,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesForceCSV",
+								"referenceName": "ds_01_BRONZE_Ingest_SalesForce_CSV",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_fileName": "OrderFeed.csv"
@@ -882,16 +2626,9 @@
 						]
 					},
 					{
-						"name": "Copy13_pociobprimaryfs_OrderHistory_csv",
+						"name": "cpyOrderHistory",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Copy12_pociobprimaryfs_OrderFeed_csv",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -939,7 +2676,7 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SalesForce"
 								}
 							},
 							"translator": {
@@ -953,7 +2690,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSFSource",
+								"referenceName": "ds_01_BRONZE_Extract_SalesForce",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_objectApiName": "OrderHistory"
@@ -962,7 +2699,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesForceCSV",
+								"referenceName": "ds_01_BRONZE_Ingest_SalesForce_CSV",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_fileName": "OrderHistory.csv"
@@ -971,16 +2708,9 @@
 						]
 					},
 					{
-						"name": "Copy14_pociobprimaryfs_OrderItem_csv",
+						"name": "cpyOrderItem",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Copy13_pociobprimaryfs_OrderHistory_csv",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -1028,7 +2758,7 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SalesForce"
 								}
 							},
 							"translator": {
@@ -1042,7 +2772,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSFSource",
+								"referenceName": "ds_01_BRONZE_Extract_SalesForce",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_objectApiName": "OrderItem"
@@ -1051,7 +2781,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesForceCSV",
+								"referenceName": "ds_01_BRONZE_Ingest_SalesForce_CSV",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_fileName": "OrderItem.csv"
@@ -1060,16 +2790,9 @@
 						]
 					},
 					{
-						"name": "Copy16_pociobprimaryfs_OrderItemFeed_csv",
+						"name": "cpyOrderItemFeed",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Copy14_pociobprimaryfs_OrderItem_csv",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -1117,7 +2840,7 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SalesForce"
 								}
 							},
 							"translator": {
@@ -1131,7 +2854,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSFSource",
+								"referenceName": "ds_01_BRONZE_Extract_SalesForce",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_objectApiName": "OrderItemFeed"
@@ -1140,7 +2863,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesForceCSV",
+								"referenceName": "ds_01_BRONZE_Ingest_SalesForce_CSV",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_fileName": "OrderItemFeed.csv"
@@ -1149,16 +2872,9 @@
 						]
 					},
 					{
-						"name": "Copy17_pociobprimaryfs_OrderItemHistory_csv",
+						"name": "cpyOrderItemHistory",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Copy16_pociobprimaryfs_OrderItemFeed_csv",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -1206,7 +2922,7 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SalesForce"
 								}
 							},
 							"translator": {
@@ -1220,7 +2936,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSFSource",
+								"referenceName": "ds_01_BRONZE_Extract_SalesForce",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_objectApiName": "OrderItemHistory"
@@ -1229,7 +2945,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesForceCSV",
+								"referenceName": "ds_01_BRONZE_Ingest_SalesForce_CSV",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_fileName": "OrderItemHistory.csv"
@@ -1238,16 +2954,9 @@
 						]
 					},
 					{
-						"name": "Copy18_pociobprimaryfs_OrderShare_csv",
+						"name": "cpyOrderShare",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Copy17_pociobprimaryfs_OrderItemHistory_csv",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -1295,7 +3004,7 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SalesForce"
 								}
 							},
 							"translator": {
@@ -1309,7 +3018,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSFSource",
+								"referenceName": "ds_01_BRONZE_Extract_SalesForce",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_objectApiName": "OrderShare"
@@ -1318,7 +3027,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesForceCSV",
+								"referenceName": "ds_01_BRONZE_Ingest_SalesForce_CSV",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_fileName": "OrderShare.csv"
@@ -1327,16 +3036,9 @@
 						]
 					},
 					{
-						"name": "Copy19_pociobprimaryfs_OrderStatus_csv",
+						"name": "cpyOrderStatus",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Copy18_pociobprimaryfs_OrderShare_csv",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -1384,7 +3086,7 @@
 										"referenceName": "ws-pociob-WorkspaceDefaultStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "pociobprimaryfs"
+									"path": "pociobrawlanding/SalesForce"
 								}
 							},
 							"translator": {
@@ -1398,7 +3100,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "dsSFSource",
+								"referenceName": "ds_01_BRONZE_Extract_SalesForce",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_objectApiName": "OrderStatus"
@@ -1407,7 +3109,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "tgtSalesForceCSV",
+								"referenceName": "ds_01_BRONZE_Ingest_SalesForce_CSV",
 								"type": "DatasetReference",
 								"parameters": {
 									"cw_fileName": "OrderStatus.csv"
@@ -1422,162 +3124,728 @@
 				},
 				"parameters": {
 					"windowStart": {
-						"type": "String"
+						"type": "String",
+						"defaultValue": "01/01/2020"
 					},
 					"windowEnd": {
-						"type": "String"
+						"type": "String",
+						"defaultValue": "04/18/2023"
 					}
+				},
+				"folder": {
+					"name": "OUTROS"
 				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/dsSFSource')]",
-				"[concat(variables('workspaceId'), '/datasets/tgtSalesForceCSV')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Extract_SalesForce')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_01_BRONZE_Ingest_SalesForce_CSV')]",
 				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/tgtSalesParquet')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
+			"name": "[concat(parameters('workspaceName'), '/pip_02_SILVER_Clean_Olist')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "carsales.parquet",
-						"fileSystem": "pociobrawlanding"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
+				"activities": [
 					{
-						"name": "index",
-						"type": "INT64"
-					},
-					{
-						"name": "brand",
-						"type": "UTF8"
-					},
-					{
-						"name": "name",
-						"type": "UTF8"
-					},
-					{
-						"name": "bodyType",
-						"type": "UTF8"
-					},
-					{
-						"name": "color",
-						"type": "UTF8"
-					},
-					{
-						"name": "fuelType",
-						"type": "UTF8"
-					},
-					{
-						"name": "year",
-						"type": "DOUBLE"
-					},
-					{
-						"name": "mileage",
-						"type": "DOUBLE"
-					},
-					{
-						"name": "transmission",
-						"type": "UTF8"
-					},
-					{
-						"name": "power",
-						"type": "DOUBLE"
-					},
-					{
-						"name": "price",
-						"type": "INT64"
-					},
-					{
-						"name": "vehicleConfiguration",
-						"type": "UTF8"
-					},
-					{
-						"name": "engineName",
-						"type": "UTF8"
-					},
-					{
-						"name": "engineDisplacement",
-						"type": "UTF8"
-					},
-					{
-						"name": "date",
-						"type": "UTF8"
-					},
-					{
-						"name": "location",
-						"type": "UTF8"
-					},
-					{
-						"name": "link",
-						"type": "UTF8"
-					},
-					{
-						"name": "parse_date",
-						"type": "UTF8"
+						"name": "dfCleanOlist",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_02_SILVER_Clean_SQL_Olist",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"srcOlistParquet": {
+										"Schema": {
+											"value": "@pipeline().parameters.Schema",
+											"type": "Expression"
+										},
+										"Table": {
+											"value": "@pipeline().parameters.Table",
+											"type": "Expression"
+										}
+									},
+									"snkWriteParquet": {
+										"Directory": {
+											"value": "@{pipeline().parameters.Schema}/@{pipeline().parameters.Table}",
+											"type": "Expression"
+										}
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
-				]
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"Schema": {
+						"type": "string"
+					},
+					"Table": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "02_SILVER_OLIST"
+				},
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+				"[concat(variables('workspaceId'), '/dataflows/df_02_SILVER_Clean_SQL_Olist')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/tgtSalesForceCSV')]",
+			"name": "[concat(parameters('workspaceName'), '/pip_Master_Olist')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Ingest Customer",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_01_BRONZE_OlistGCP_Customers",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Ingest Orders",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_01_BRONZE_OlistGCP_Orders",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Ingest Order Items",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_01_BRONZE_OlistGCP_OrderItems",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Ingest Reviews",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_01_BRONZE_OlistGCP_OrderReviews",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Ingest Geo Location",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_01_BRONZE_OlistGCP_GeoLocation",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Ingest Payments",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_01_BRONZE_OlistGCP_Payments",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Ingest Category Name Translations",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_01_BRONZE_OlistGCP_CategoryName",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Ingest Products",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_01_BRONZE_OlistGCP_Products",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Ingest Sellers",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_01_BRONZE_OlistGCP_Sellers",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Clean Customers",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Ingest Customer",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_02_SILVER_Clean_OlistGCP",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"FileName": "olist_customers_dataset",
+								"TargetDirectory": "SILVER_OLIST",
+								"SourceDirectory": "BRONZE_OLIST"
+							}
+						}
+					},
+					{
+						"name": "Clean Orders",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Ingest Orders",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_02_SILVER_Clean_OlistGCP",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"FileName": "olist_orders_dataset",
+								"TargetDirectory": "SILVER_OLIST",
+								"SourceDirectory": "BRONZE_OLIST"
+							}
+						}
+					},
+					{
+						"name": "Clean Order Items",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Ingest Order Items",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_02_SILVER_Clean_OlistGCP",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"FileName": "olist_order_items_dataset",
+								"TargetDirectory": "SILVER_OLIST",
+								"SourceDirectory": "BRONZE_OLIST"
+							}
+						}
+					},
+					{
+						"name": "Clean Reviews",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Ingest Reviews",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_02_SILVER_Clean_OlistGCP",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"FileName": "olist_order_reviews_dataset",
+								"TargetDirectory": "SILVER_OLIST",
+								"SourceDirectory": "BRONZE_OLIST"
+							}
+						}
+					},
+					{
+						"name": "Clean Geo Location",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Ingest Geo Location",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_02_SILVER_Clean_OlistGCP",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"FileName": "olist_geolocation_dataset",
+								"TargetDirectory": "SILVER_OLIST",
+								"SourceDirectory": "BRONZE_OLIST"
+							}
+						}
+					},
+					{
+						"name": "Clean Payments",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Ingest Payments",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_02_SILVER_Clean_OlistGCP",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"FileName": "olist_order_payments_dataset",
+								"TargetDirectory": "SILVER_OLIST",
+								"SourceDirectory": "BRONZE_OLIST"
+							}
+						}
+					},
+					{
+						"name": "Clean Category Name Translations",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Ingest Category Name Translations",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_02_SILVER_Clean_OlistGCP",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"FileName": "product_category_name_translation",
+								"TargetDirectory": "SILVER_OLIST",
+								"SourceDirectory": "BRONZE_OLIST"
+							}
+						}
+					},
+					{
+						"name": "Clean Products",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Ingest Products",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_02_SILVER_Clean_OlistGCP",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"FileName": "olist_products_dataset",
+								"TargetDirectory": "SILVER_OLIST",
+								"SourceDirectory": "BRONZE_OLIST"
+							}
+						}
+					},
+					{
+						"name": "Clean Sellers",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Ingest Sellers",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pip_02_SILVER_Clean_OlistGCP",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"FileName": "olist_sellers_dataset",
+								"TargetDirectory": "SILVER_OLIST",
+								"SourceDirectory": "BRONZE_OLIST"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "00_MASTER"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/pipelines/pip_01_BRONZE_OlistGCP_Customers')]",
+				"[concat(variables('workspaceId'), '/pipelines/pip_01_BRONZE_OlistGCP_Orders')]",
+				"[concat(variables('workspaceId'), '/pipelines/pip_01_BRONZE_OlistGCP_OrderItems')]",
+				"[concat(variables('workspaceId'), '/pipelines/pip_01_BRONZE_OlistGCP_OrderReviews')]",
+				"[concat(variables('workspaceId'), '/pipelines/pip_01_BRONZE_OlistGCP_GeoLocation')]",
+				"[concat(variables('workspaceId'), '/pipelines/pip_01_BRONZE_OlistGCP_Payments')]",
+				"[concat(variables('workspaceId'), '/pipelines/pip_01_BRONZE_OlistGCP_CategoryName')]",
+				"[concat(variables('workspaceId'), '/pipelines/pip_01_BRONZE_OlistGCP_Products')]",
+				"[concat(variables('workspaceId'), '/pipelines/pip_01_BRONZE_OlistGCP_Sellers')]",
+				"[concat(variables('workspaceId'), '/pipelines/pip_02_SILVER_Clean_OlistGCP')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_01_BRONZE_Extract_OlistGCP')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"referenceName": "OlistSQLGCP",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
-					"cw_fileName": {
+					"cw_table": {
 						"type": "String"
 					}
 				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().cw_fileName",
-							"type": "Expression"
-						},
-						"fileSystem": "pociobrawlanding"
-					},
-					"columnDelimiter": "|",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
+				"folder": {
+					"name": "01_BRONZE_OLIST"
 				},
-				"schema": []
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": {
+						"value": "@dataset().cw_table",
+						"type": "Expression"
+					}
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+				"[concat(variables('workspaceId'), '/linkedServices/OlistSQLGCP')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/dsSQLSales')]",
+			"name": "[concat(parameters('workspaceName'), '/ds_01_BRONZE_Extract_Olist_Customers')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultSqlServer",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"DBName": "Olist"
+					}
+				},
+				"folder": {
+					"name": "OUTROS"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "customer_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "customer_unique_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "customer_zip_code_prefix",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "customer_city",
+						"type": "nvarchar"
+					},
+					{
+						"name": "customer_state",
+						"type": "char"
+					}
+				],
+				"typeProperties": {
+					"tableName": "dbo.olist_customers_dataset"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultSqlServer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_01_BRONZE_Extract_Olist_SysObjects')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultSqlServer",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"DBName": "Olist"
+					}
+				},
+				"folder": {
+					"name": "01_BRONZE_OLIST"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "xtype",
+						"type": "char"
+					},
+					{
+						"name": "uid",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "info",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "status",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "base_schema_ver",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "replinfo",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "parent_obj",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "crdate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "ftcatid",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "schema_ver",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "stats_schema_ver",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "type",
+						"type": "char"
+					},
+					{
+						"name": "userstat",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "sysstat",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "indexdel",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "refdate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "version",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "deltrig",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "instrig",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "updtrig",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "seltrig",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "category",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "cache",
+						"type": "smallint",
+						"precision": 5
+					}
+				],
+				"typeProperties": {
+					"schema": "sys",
+					"table": "sysobjects"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultSqlServer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_01_BRONZE_Extract_SQLSales')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
 					"referenceName": "SQLCarSales",
 					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Schema": {
+						"type": "string"
+					},
+					"Table": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "OUTROS"
 				},
 				"annotations": [],
 				"type": "SqlServerTable",
@@ -1670,7 +3938,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/dsSFSource')]",
+			"name": "[concat(parameters('workspaceName'), '/ds_01_BRONZE_Extract_SalesForce')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -1682,6 +3950,9 @@
 					"cw_objectApiName": {
 						"type": "String"
 					}
+				},
+				"folder": {
+					"name": "OUTROS"
 				},
 				"annotations": [],
 				"type": "SalesforceObject",
@@ -1695,6 +3966,853 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/SalesforceLM')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_01_BRONZE_Ingest_OlistGCP')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"cw_fileName": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "01_BRONZE_OLIST"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@concat(dataset().cw_fileName, '.parquet')",
+							"type": "Expression"
+						},
+						"folderPath": "BRONZE_OLIST",
+						"fileSystem": "pociobrawlanding"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_01_BRONZE_Ingest_Olist_Customers')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OUTROS"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "SQLOlist/Customer",
+						"fileSystem": "pociobrawlanding"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_01_BRONZE_Ingest_Olist_Tables')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Schema": {
+						"type": "string"
+					},
+					"Table": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "01_BRONZE_OLIST"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@{dataset().Schema}/@{dataset().Table}",
+							"type": "Expression"
+						},
+						"fileSystem": "pociobrawlanding"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_01_BRONZE_Ingest_SQLSales_Parquet')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OUTROS"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "SQLSales",
+						"fileSystem": "pociobrawlanding"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "index",
+						"type": "INT64"
+					},
+					{
+						"name": "brand",
+						"type": "UTF8"
+					},
+					{
+						"name": "name",
+						"type": "UTF8"
+					},
+					{
+						"name": "bodyType",
+						"type": "UTF8"
+					},
+					{
+						"name": "color",
+						"type": "UTF8"
+					},
+					{
+						"name": "fuelType",
+						"type": "UTF8"
+					},
+					{
+						"name": "year",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "mileage",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "transmission",
+						"type": "UTF8"
+					},
+					{
+						"name": "power",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "price",
+						"type": "INT64"
+					},
+					{
+						"name": "vehicleConfiguration",
+						"type": "UTF8"
+					},
+					{
+						"name": "engineName",
+						"type": "UTF8"
+					},
+					{
+						"name": "engineDisplacement",
+						"type": "UTF8"
+					},
+					{
+						"name": "date",
+						"type": "UTF8"
+					},
+					{
+						"name": "location",
+						"type": "UTF8"
+					},
+					{
+						"name": "link",
+						"type": "UTF8"
+					},
+					{
+						"name": "parse_date",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_01_BRONZE_Ingest_SalesForce_CSV')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"cw_fileName": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "OUTROS"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().cw_fileName",
+							"type": "Expression"
+						},
+						"folderPath": "SalesForce",
+						"fileSystem": "pociobrawlanding"
+					},
+					"columnDelimiter": "|",
+					"rowDelimiter": "\n",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_01_BRONZE_OlistSQLGCP')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OlistSQLGCP",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "01_BRONZE_OLIST"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/OlistSQLGCP')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_01_BRONZE_OlistSQLGCP_SysObjects')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OlistSQLGCP",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "01_BRONZE_OLIST"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "sys",
+					"table": "sysobjects"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/OlistSQLGCP')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_02_SILVER_Clean_SalesForce')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OUTROS"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "SalesForce",
+						"fileSystem": "pociobrawlanding"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_02_SILVER_RawFiles_Olist')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Schema": {
+						"type": "string"
+					},
+					"Table": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "02_SILVER_OLIST"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@{dataset().Schema}/@{dataset().Table}",
+							"type": "Expression"
+						},
+						"fileSystem": "pociobrawlanding"
+					},
+					"columnDelimiter": "|",
+					"rowDelimiter": "\n",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_02_SILVER_RawFiles_SalesForce')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"ptable": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "OUTROS"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().ptable",
+							"type": "Expression"
+						},
+						"folderPath": "SalesForce",
+						"fileSystem": "pociobrawlanding"
+					},
+					"columnDelimiter": "|",
+					"rowDelimiter": "\n",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_02_SILVER_Read_OlistGCP_Parquet')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Directory": {
+						"type": "string"
+					},
+					"File": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "02_SILVER_OLIST"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@concat(dataset().File, '.parquet')",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().Directory",
+							"type": "Expression"
+						},
+						"fileSystem": "pociobrawlanding"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_02_SILVER_Read_Olist_Parquet')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Schema": {
+						"type": "string"
+					},
+					"Table": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "02_SILVER_OLIST"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@{dataset().Schema}/@{dataset().Table}",
+							"type": "Expression"
+						},
+						"fileSystem": "pociobrawlanding"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_02_SILVER_Read_SQLSales_Parquet')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Schema": {
+						"type": "string"
+					},
+					"Table": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "OUTROS"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@{dataset().Schema}/@{dataset().Table}",
+							"type": "Expression"
+						},
+						"fileSystem": "pociobrawlanding"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "index",
+						"type": "INT64"
+					},
+					{
+						"name": "brand",
+						"type": "UTF8"
+					},
+					{
+						"name": "name",
+						"type": "UTF8"
+					},
+					{
+						"name": "bodyType",
+						"type": "UTF8"
+					},
+					{
+						"name": "color",
+						"type": "UTF8"
+					},
+					{
+						"name": "fuelType",
+						"type": "UTF8"
+					},
+					{
+						"name": "year",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "mileage",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "transmission",
+						"type": "UTF8"
+					},
+					{
+						"name": "power",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "price",
+						"type": "INT64"
+					},
+					{
+						"name": "vehicleConfiguration",
+						"type": "UTF8"
+					},
+					{
+						"name": "engineName",
+						"type": "UTF8"
+					},
+					{
+						"name": "engineDisplacement",
+						"type": "UTF8"
+					},
+					{
+						"name": "date",
+						"type": "UTF8"
+					},
+					{
+						"name": "location",
+						"type": "UTF8"
+					},
+					{
+						"name": "link",
+						"type": "UTF8"
+					},
+					{
+						"name": "parse_date",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_02_SILVER_Read_SalesForce_CSV')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OUTROS"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "*.csv",
+						"folderPath": "SalesForce",
+						"fileSystem": "pociobrawlanding"
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_02_SILVER_SalesForce_CSV')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OUTROS"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "SalesForce",
+						"fileSystem": "pociobcleansed"
+					},
+					"columnDelimiter": "|",
+					"rowDelimiter": "\n",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_02_SILVER_SalesForce_Parquet')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Directory": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "OUTROS"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().Directory",
+							"type": "Expression"
+						},
+						"fileSystem": "pociobcleansed"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_02_SILVER_Write_OlistGCP_Parquet')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Directory": {
+						"type": "string"
+					},
+					"File": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "02_SILVER_OLIST"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@{dataset().Directory}/@{dataset().File}",
+							"type": "Expression"
+						},
+						"fileSystem": "pociobcleansed"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_02_SILVER_Write_Olist_Parquet')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Directory": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "02_SILVER_OLIST"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().Directory",
+							"type": "Expression"
+						},
+						"fileSystem": "pociobcleansed"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_03_GOLD_Dim_Brand')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "03_GOLD_OLIST"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "dimensions",
+						"fileSystem": "pociobcleansed"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_03_GOLD_Fact_Sales')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "03_GOLD_OLIST"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "dimensions",
+						"fileSystem": "pociobcleansed"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/OlistSQLGCP')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('OlistSQLGCP_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
 			]
 		},
 		{
@@ -1790,7 +4908,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Trigger_7ig')]",
+			"name": "[concat(parameters('workspaceName'), '/Trigger_3b5')]",
 			"type": "Microsoft.Synapse/workspaces/triggers",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -1799,21 +4917,34 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "cpyDeltaPipeSales",
+							"referenceName": "pip_01_BRONZE_SQLOlist_AllTabs",
 							"type": "PipelineReference"
 						},
-						"parameters": {
-							"windowStart": {
-								"type": "Expression",
-								"value": "[parameters('Trigger_7ig_properties_cpyDeltaPipeSales_parameters_windowStart')]"
-							},
-							"windowEnd": {
-								"type": "Expression",
-								"value": "[parameters('Trigger_7ig_properties_cpyDeltaPipeSales_parameters_windowEnd')]"
-							}
-						}
+						"parameters": {}
 					}
 				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Hour",
+						"interval": 24,
+						"startTime": "2023-04-20T14:14:00Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/pipelines/pip_01_BRONZE_SQLOlist_AllTabs')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Trigger_7ig')]",
+			"type": "Microsoft.Synapse/workspaces/triggers",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
 				"type": "ScheduleTrigger",
 				"typeProperties": {
 					"recurrence": {
@@ -1824,9 +4955,7 @@
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/pipelines/cpyDeltaPipeSales')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/Trigger_j4z')]",
@@ -1838,17 +4967,17 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "cpySalesForceCampaign",
+							"referenceName": "pip_01_BRONZE_SalesForce",
 							"type": "PipelineReference"
 						},
 						"parameters": {
 							"windowStart": {
 								"type": "Expression",
-								"value": "[parameters('Trigger_j4z_properties_cpySalesForceCampaign_parameters_windowStart')]"
+								"value": "[parameters('Trigger_j4z_properties_pip_01_BRONZE_SalesForce_parameters_windowStart')]"
 							},
 							"windowEnd": {
 								"type": "Expression",
-								"value": "[parameters('Trigger_j4z_properties_cpySalesForceCampaign_parameters_windowEnd')]"
+								"value": "[parameters('Trigger_j4z_properties_pip_01_BRONZE_SalesForce_parameters_windowEnd')]"
 							}
 						}
 					}
@@ -1864,7 +4993,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/pipelines/cpySalesForceCampaign')]"
+				"[concat(variables('workspaceId'), '/pipelines/pip_01_BRONZE_SalesForce')]"
 			]
 		},
 		{
@@ -1887,6 +5016,463 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/df_02_SILVER_Clean_OlistGCP')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "02_SILVER_OLIST"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_02_SILVER_Read_OlistGCP_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "srcOlistParquet",
+							"description": "Import data from Olist Parquet BRONZE"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_02_SILVER_Write_OlistGCP_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "snkOlistParquet2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "dcTrimLowerStrings"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     FilePrefix as string,",
+						"     Directory as string",
+						"}",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: true,",
+						"     rowUrlColumn: '_sourcefile',",
+						"     format: 'parquet') ~> srcOlistParquet",
+						"srcOlistParquet derive(each(match(type==\"string\"&&name!=\"_sourcefile\"), $$ = lower(trim($$))),",
+						"          {_watermark} = $Directory + '/' + $FilePrefix + '/' + $FilePrefix + '_' + toString(currentTimestamp(),'yyyyMMddHHmmss') + '.parquet') ~> dcTrimLowerStrings",
+						"dcTrimLowerStrings sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     rowUrlColumn:'_watermark',",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> snkOlistParquet2"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_02_SILVER_Read_OlistGCP_Parquet')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_02_SILVER_Write_OlistGCP_Parquet')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/df_02_SILVER_Clean_SQLSales')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "OUTROS"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_02_SILVER_Read_SQLSales_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "srcSalesForceCSV"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_02_SILVER_SalesForce_CSV",
+								"type": "DatasetReference"
+							},
+							"name": "snkWriteParquet",
+							"rejectedDataLinkedService": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [
+						{
+							"name": "dcTrimLowerStrings"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          index as long,",
+						"          brand as string,",
+						"          name as string,",
+						"          bodyType as string,",
+						"          color as string,",
+						"          fuelType as string,",
+						"          year as double,",
+						"          mileage as double,",
+						"          transmission as string,",
+						"          power as double,",
+						"          price as long,",
+						"          vehicleConfiguration as string,",
+						"          engineName as string,",
+						"          engineDisplacement as string,",
+						"          date as string,",
+						"          location as string,",
+						"          link as string,",
+						"          parse_date as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: true,",
+						"     moveFiles: ['SQLSales','Processed'],",
+						"     rowUrlColumn: '_sourcefile',",
+						"     format: 'parquet') ~> srcSalesForceCSV",
+						"srcSalesForceCSV derive(each(match(type==\"string\"), $$ = lower(trim($$))),",
+						"          {_loadtime} = currentTimestamp()) ~> dcTrimLowerStrings",
+						"dcTrimLowerStrings sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     rowUrlColumn:'_filename',",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1) ~> snkWriteParquet"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_02_SILVER_Read_SQLSales_Parquet')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_02_SILVER_SalesForce_CSV')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/df_02_SILVER_Clean_SQL_Olist')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "02_SILVER_OLIST"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_02_SILVER_Read_Olist_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "srcOlistParquet",
+							"description": "Import data from Olist Parquet BRONZE"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_02_SILVER_Write_Olist_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "snkWriteParquet",
+							"rejectedDataLinkedService": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [
+						{
+							"name": "dcTrimLowerStrings"
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: true,",
+						"     moveFiles: ['SQLSales','Processed'],",
+						"     rowUrlColumn: '_sourcefile',",
+						"     format: 'parquet') ~> srcOlistParquet",
+						"srcOlistParquet derive(each(match(type==\"string\"), $$ = lower(trim($$))),",
+						"          {_loadtime} = currentTimestamp()) ~> dcTrimLowerStrings",
+						"dcTrimLowerStrings sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     filePattern:'CleanFile[n].parquet',",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1) ~> snkWriteParquet"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_02_SILVER_Read_Olist_Parquet')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_02_SILVER_Write_Olist_Parquet')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/df_02_SILVER_Clean_SalesForce')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "OUTROS"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_02_SILVER_RawFiles_SalesForce",
+								"type": "DatasetReference"
+							},
+							"name": "srcSalesForceCSV"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_02_SILVER_SalesForce_CSV",
+								"type": "DatasetReference"
+							},
+							"name": "snkWriteParquet",
+							"rejectedDataLinkedService": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [
+						{
+							"name": "dcTrimLowerStrings"
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     inferDriftedColumnTypes: true,",
+						"     ignoreNoFilesFound: true,",
+						"     moveFiles: ['SalesForce','Processed'],",
+						"     rowUrlColumn: '_filename',",
+						"     skipLines: 1) ~> srcSalesForceCSV",
+						"srcSalesForceCSV derive(each(match(type==\"string\"), $$ = lower(trim($$))),",
+						"          {_loadtime} = currentTimestamp()) ~> dcTrimLowerStrings",
+						"dcTrimLowerStrings sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     rowUrlColumn:'_filename',",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1) ~> snkWriteParquet"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_02_SILVER_RawFiles_SalesForce')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_02_SILVER_SalesForce_CSV')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/df_02_SILVER_Clean_SalesForce_gmd')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "OUTROS"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_02_SILVER_RawFiles_SalesForce",
+								"type": "DatasetReference"
+							},
+							"name": "srcSalesForceCSV"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_02_SILVER_SalesForce_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "snkWriteParquet",
+							"rejectedDataLinkedService": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [
+						{
+							"name": "dcTrimLowerStrings"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     ptable as string",
+						"}",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     inferDriftedColumnTypes: true,",
+						"     ignoreNoFilesFound: true,",
+						"     moveFiles: ['SalesForce','Processed'],",
+						"     rowUrlColumn: '_filename',",
+						"     skipLines: 1,",
+						"     wildcardPaths:['*.csv']) ~> srcSalesForceCSV",
+						"srcSalesForceCSV derive(each(match(type==\"string\"), $$ = lower(trim($$))),",
+						"          {_loadtime} = currentTimestamp()) ~> dcTrimLowerStrings",
+						"dcTrimLowerStrings sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     partitionFileNames:[($ptable)],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     outputAssertFailedRows: true,",
+						"     assertFailure_fileSystem: 'pociobcleansed',",
+						"     assertFailure_folderPath: 'fail',",
+						"     partitionBy('hash', 1)) ~> snkWriteParquet"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_02_SILVER_RawFiles_SalesForce')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_02_SILVER_SalesForce_Parquet')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/df_03_GOLD_Brand_Dimension')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "OUTROS"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_02_SILVER_Read_SQLSales_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "srcSales"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ws-pociob-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"name": "BrandDimension"
+						}
+					],
+					"transformations": [
+						{
+							"name": "selBrand"
+						},
+						{
+							"name": "rnkBrand"
+						},
+						{
+							"name": "aggBrand"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     ptable as string",
+						"}",
+						"source(output(",
+						"          index as long,",
+						"          brand as string,",
+						"          name as string,",
+						"          bodyType as string,",
+						"          color as string,",
+						"          fuelType as string,",
+						"          year as double,",
+						"          mileage as double,",
+						"          transmission as string,",
+						"          power as double,",
+						"          price as long,",
+						"          vehicleConfiguration as string,",
+						"          engineName as string,",
+						"          engineDisplacement as string,",
+						"          date as string,",
+						"          location as string,",
+						"          link as string,",
+						"          parse_date as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     inferDriftedColumnTypes: true,",
+						"     ignoreNoFilesFound: true,",
+						"     moveFiles: ['','Processed'],",
+						"     format: 'parquet',",
+						"     wildcardPaths:['cpyDeltaPipeSales*.parquet']) ~> srcSales",
+						"srcSales select(mapColumn(",
+						"          brand",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selBrand",
+						"selBrand rank(asc(brand, true),",
+						"     output(brandRank as long),",
+						"     dense: true) ~> rnkBrand",
+						"rnkBrand aggregate(groupBy(brand),",
+						"     brandId = max(brandRank)) ~> aggBrand",
+						"aggBrand sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'pociobcleansed',",
+						"     folderPath: 'dimensions',",
+						"     mergeSchema: true,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> BrandDimension"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_02_SILVER_Read_SQLSales_Parquet')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ws-pociob-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/WorkspaceSystemIdentity')]",
 			"type": "Microsoft.Synapse/workspaces/credentials",
 			"apiVersion": "2019-06-01-preview",
@@ -1897,18 +5483,18 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/NYCTripSimpleQuery')]",
+			"name": "[concat(parameters('workspaceName'), '/SQL script 1')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"content": {
-					"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://pocioblake.dfs.core.windows.net/pociobprimaryfs/NYCTripSmall.parquet',\n        FORMAT='PARQUET' \n    ) AS [result]",
+					"query": "select  name\nfrom    SYSOBJECTS\nWHERE\n  xtype = 'U';",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "master",
-						"poolName": "Built-in"
+						"databaseName": "Olist",
+						"poolName": "Olist"
 					},
 					"resultLimit": 5000
 				},
@@ -1917,18 +5503,18 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 1')]",
+			"name": "[concat(parameters('workspaceName'), '/SQL script 2')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"content": {
-					"query": "CREATE TABLE tbWaterMarkControl\n(\n\t TableControled VARCHAR,\n\t WatermarkValue datetime\n)",
+					"query": "SELECT TOP (100) [name]\n,[object_id]\n,[principal_id]\n,[schema_id]\n,[parent_object_id]\n,[type]\n,[type_desc]\n,[create_date]\n,[modify_date]\n,[is_ms_shipped]\n,[is_published]\n,[is_schema_published]\n FROM [sys].[system_objects]\n where type = 'U'",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "SynapseIntegrationMDDB",
-						"poolName": "Built-in"
+						"databaseName": "Olist",
+						"poolName": "Olist"
 					},
 					"resultLimit": 5000
 				},
@@ -1962,6 +5548,589 @@
 									"LinkedServiceName": "ws-pociob-WorkspaceDefaultStorage"
 								}
 							}
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "RAW_SalesForce",
+							"EntityType": "TABLE",
+							"Namespace": {
+								"DatabaseName": "Database1"
+							},
+							"Description": "",
+							"TableType": "EXTERNAL",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"StorageDescriptor": {
+								"Columns": [
+									{
+										"Name": "Id",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "IsDeleted",
+										"OriginDataTypeName": {
+											"TypeName": "boolean",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "boolean"
+											}
+										}
+									},
+									{
+										"Name": "Name",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "ParentId",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "Type",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "Status",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "StartDate",
+										"OriginDataTypeName": {
+											"TypeName": "timestamp",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
+												"HIVE_TYPE_STRING": "timestamp"
+											}
+										}
+									},
+									{
+										"Name": "EndDate",
+										"OriginDataTypeName": {
+											"TypeName": "timestamp",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
+												"HIVE_TYPE_STRING": "timestamp"
+											}
+										}
+									},
+									{
+										"Name": "ExpectedRevenue",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										}
+									},
+									{
+										"Name": "BudgetedCost",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										}
+									},
+									{
+										"Name": "ActualCost",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										}
+									},
+									{
+										"Name": "ExpectedResponse",
+										"OriginDataTypeName": {
+											"TypeName": "double",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "double"
+											}
+										}
+									},
+									{
+										"Name": "NumberSent",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										}
+									},
+									{
+										"Name": "IsActive",
+										"OriginDataTypeName": {
+											"TypeName": "boolean",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "boolean"
+											}
+										}
+									},
+									{
+										"Name": "Description",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "NumberOfLeads",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										}
+									},
+									{
+										"Name": "NumberOfConvertedLeads",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										}
+									},
+									{
+										"Name": "NumberOfContacts",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										}
+									},
+									{
+										"Name": "NumberOfResponses",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										}
+									},
+									{
+										"Name": "NumberOfOpportunities",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										}
+									},
+									{
+										"Name": "NumberOfWonOpportunities",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										}
+									},
+									{
+										"Name": "AmountAllOpportunities",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										}
+									},
+									{
+										"Name": "AmountWonOpportunities",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										}
+									},
+									{
+										"Name": "OwnerId",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "CreatedDate",
+										"OriginDataTypeName": {
+											"TypeName": "timestamp",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
+												"HIVE_TYPE_STRING": "timestamp"
+											}
+										}
+									},
+									{
+										"Name": "CreatedById",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "LastModifiedDate",
+										"OriginDataTypeName": {
+											"TypeName": "timestamp",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
+												"HIVE_TYPE_STRING": "timestamp"
+											}
+										}
+									},
+									{
+										"Name": "LastModifiedById",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "SystemModstamp",
+										"OriginDataTypeName": {
+											"TypeName": "timestamp",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
+												"HIVE_TYPE_STRING": "timestamp"
+											}
+										}
+									},
+									{
+										"Name": "LastActivityDate",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "LastViewedDate",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "LastReferencedDate",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "CampaignMemberRecordTypeId",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									}
+								],
+								"Format": {
+									"InputFormat": "org.apache.hadoop.mapred.SequenceFileInputFormat",
+									"OutputFormat": "org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat",
+									"FormatType": "csv",
+									"SerializeLib": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+									"Properties": {
+										"path": "abfss://pociobrawlanding@pocioblake.dfs.core.windows.net/SalesForce",
+										"delimiter": "|",
+										"firstRowAsHeader": "true",
+										"multiLine": "false",
+										"serialization.format": "1",
+										"FormatTypeSetToDatabaseDefault": false,
+										"header": "true"
+									}
+								},
+								"Source": {
+									"Provider": "ADLS",
+									"Location": "abfss://pociobrawlanding@pocioblake.dfs.core.windows.net/SalesForce",
+									"Properties": {
+										"LinkedServiceName": "ws-pociob-WorkspaceDefaultStorage",
+										"LocationSetToDatabaseDefault": false
+									}
+								},
+								"Properties": {
+									"textinputformat.record.delimiter": "|",
+									"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
+									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
+								},
+								"Compressed": false,
+								"IsStoredAsSubdirectories": false
+							},
+							"Properties": {
+								"Description": "",
+								"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
+								"PrimaryKeys": "",
+								"spark.sql.sources.provider": "csv"
+							},
+							"Retention": 0,
+							"Temporary": false,
+							"IsRewriteEnabled": false
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "olist_customers",
+							"EntityType": "TABLE",
+							"Namespace": {
+								"DatabaseName": "Database1"
+							},
+							"Description": "",
+							"TableType": "EXTERNAL",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"StorageDescriptor": {
+								"Columns": [
+									{
+										"Name": "customer_id",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "customer_unique_id",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "customer_zip_code_prefix",
+										"OriginDataTypeName": {
+											"TypeName": "integer",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "integer"
+											}
+										}
+									},
+									{
+										"Name": "customer_city",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "customer_state",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "_sourcefile",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "_loadtime",
+										"OriginDataTypeName": {
+											"TypeName": "timestamp",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
+												"HIVE_TYPE_STRING": "timestamp"
+											}
+										}
+									}
+								],
+								"Format": {
+									"InputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
+									"OutputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
+									"FormatType": "parquet",
+									"SerializeLib": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
+									"Properties": {
+										"path": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SQLOlist/olist_customers_dataset/CleanFile1.parquet",
+										"FormatTypeSetToDatabaseDefault": false
+									}
+								},
+								"Source": {
+									"Provider": "ADLS",
+									"Location": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SQLOlist/olist_customers_dataset/CleanFile1.parquet",
+									"Properties": {
+										"LinkedServiceName": "ws-pociob-WorkspaceDefaultStorage",
+										"LocationSetToDatabaseDefault": false
+									}
+								},
+								"Properties": {
+									"textinputformat.record.delimiter": ",",
+									"compression": "",
+									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
+								},
+								"Compressed": false,
+								"IsStoredAsSubdirectories": false
+							},
+							"Properties": {
+								"Description": "",
+								"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
+								"PrimaryKeys": "",
+								"spark.sql.sources.provider": "parquet"
+							},
+							"Retention": 0,
+							"Temporary": false,
+							"IsRewriteEnabled": false
 						},
 						"Source": {
 							"Type": "SPARK"
