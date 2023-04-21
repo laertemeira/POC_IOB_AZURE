@@ -18,6 +18,12 @@
 					"dataflow": {
 						"referenceName": "df_02_SILVER_Clean_OlistGCP",
 						"type": "DataFlowReference",
+						"parameters": {
+							"FilePrefix": {
+								"value": "'@{pipeline().parameters.FileName}'",
+								"type": "Expression"
+							}
+						},
 						"datasetParameters": {
 							"srcOlistParquet": {
 								"Directory": "BRONZE_OLIST",
@@ -25,6 +31,10 @@
 									"value": "@pipeline().parameters.FileName",
 									"type": "Expression"
 								}
+							},
+							"snkOlistParquet2": {
+								"Directory": "BRONZE_OLIST",
+								"File": "@pipeline().parameters.FileName"
 							}
 						}
 					},
