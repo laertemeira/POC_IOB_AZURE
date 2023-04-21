@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Exec Customer",
+				"name": "Ingest Customer",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
@@ -16,7 +16,7 @@
 				}
 			},
 			{
-				"name": "Exec Orders",
+				"name": "Ingest Orders",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
@@ -29,7 +29,7 @@
 				}
 			},
 			{
-				"name": "Exec Order Items",
+				"name": "Ingest Order Items",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
@@ -42,7 +42,7 @@
 				}
 			},
 			{
-				"name": "Exec Reviews",
+				"name": "Ingest Reviews",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
@@ -55,7 +55,7 @@
 				}
 			},
 			{
-				"name": "Exec Geo Location",
+				"name": "Ingest Geo Location",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
@@ -68,7 +68,7 @@
 				}
 			},
 			{
-				"name": "Exec Payments",
+				"name": "Ingest Payments",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
@@ -81,7 +81,7 @@
 				}
 			},
 			{
-				"name": "Exec Category Name Translations",
+				"name": "Ingest Category Name Translations",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
@@ -94,7 +94,7 @@
 				}
 			},
 			{
-				"name": "Exec Products",
+				"name": "Ingest Products",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
@@ -107,7 +107,7 @@
 				}
 			},
 			{
-				"name": "Exec Sellers",
+				"name": "Ingest Sellers",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
@@ -117,6 +117,56 @@
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Clean Customers",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Ingest Customer",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pip_02_SILVER_Clean_OlistGCP",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"FileName": "olist_customers_dataset",
+						"TargetDirectory": "SILVER_OLIST",
+						"SourceDirectory": "BRONZE_OLIST"
+					}
+				}
+			},
+			{
+				"name": "Clean Orders",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Ingest Orders",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pip_02_SILVER_Clean_OlistGCP",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"FileName": "olist_orders_dataset",
+						"TargetDirectory": "SILVER_OLIST",
+						"SourceDirectory": "BRONZE_OLIST"
+					}
 				}
 			}
 		],
