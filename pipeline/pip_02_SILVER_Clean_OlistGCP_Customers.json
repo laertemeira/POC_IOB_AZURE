@@ -18,12 +18,6 @@
 					"dataflow": {
 						"referenceName": "df_02_SILVER_Clean_OlistGCP",
 						"type": "DataFlowReference",
-						"parameters": {
-							"File": {
-								"value": "'@{'olist_customers_dataset'}'",
-								"type": "Expression"
-							}
-						},
 						"datasetParameters": {
 							"srcOlistParquet": {
 								"Directory": "BRONZE_OLIST",
@@ -43,6 +37,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"FileName": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "02_SILVER_OLIST"
 		},
