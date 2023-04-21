@@ -35,13 +35,16 @@
 				}
 			],
 			"scriptLines": [
+				"parameters{",
+				"     FilePrefix as string",
+				"}",
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: true,",
 				"     rowUrlColumn: '_sourcefile',",
 				"     format: 'parquet') ~> srcOlistParquet",
 				"srcOlistParquet derive(each(match(type==\"string\" && name!=\"_sourcefile\"), $$ = lower(trim($$))),",
-				"          {_loadtime} = toString(currentTimestamp(),'yyyyMMddHHmmss')) ~> dcTrimLowerStrings",
+				"          {_loadtime} = $FilePrefix + '_' + toString(currentTimestamp(),'yyyyMMddHHmmss')) ~> dcTrimLowerStrings",
 				"dcTrimLowerStrings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
