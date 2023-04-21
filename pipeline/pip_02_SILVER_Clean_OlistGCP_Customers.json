@@ -24,20 +24,26 @@
 								"type": "Expression"
 							},
 							"Directory": {
-								"value": "'@{pipeline().parameters.Directory}'",
+								"value": "'@{pipeline().parameters.TargetDirectory}'",
 								"type": "Expression"
 							}
 						},
 						"datasetParameters": {
 							"srcOlistParquet": {
-								"Directory": "BRONZE_OLIST",
+								"Directory": {
+									"value": "@pipeline().parameters.SourceDirectory",
+									"type": "Expression"
+								},
 								"File": {
 									"value": "@pipeline().parameters.FileName",
 									"type": "Expression"
 								}
 							},
 							"snkOlistParquet2": {
-								"Directory": "SILVER_OLIST",
+								"Directory": {
+									"value": "@pipeline().parameters.TargetDirectory",
+									"type": "Expression"
+								},
 								"File": "@pipeline().parameters.FileName"
 							}
 						}
@@ -55,9 +61,13 @@
 				"type": "string",
 				"defaultValue": "olist_customers_dataset"
 			},
-			"Directory": {
+			"TargetDirectory": {
 				"type": "string",
 				"defaultValue": "SILVER_OLIST"
+			},
+			"SourceDirectory": {
+				"type": "string",
+				"defaultValue": "BRONZE_OLIST"
 			}
 		},
 		"folder": {
