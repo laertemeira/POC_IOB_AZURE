@@ -20,7 +20,7 @@
 						"type": "DataFlowReference",
 						"parameters": {
 							"File": {
-								"value": "'olist_customers_dataset.parquet'",
+								"value": "'@{'olist_customers_dataset'}'",
 								"type": "Expression"
 							}
 						},
