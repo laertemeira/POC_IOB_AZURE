@@ -22,10 +22,13 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@concat(dataset().FileName,'.parquet')",
+					"value": "@concat(dataset().File, '.parquet')",
 					"type": "Expression"
 				},
-				"folderPath": "SILVER_OLIST",
+				"folderPath": {
+					"value": "@dataset().Directory",
+					"type": "Expression"
+				},
 				"fileSystem": "pociobcleansed"
 			},
 			"compressionCodec": "snappy"
