@@ -22,10 +22,7 @@
 					"value": "@concat(dataset().cw_fileName, '.parquet')",
 					"type": "Expression"
 				},
-				"folderPath": {
-					"value": "BRONZE_OLIST",
-					"type": "Expression"
-				},
+				"folderPath": "BRONZE_OLIST",
 				"fileSystem": "pociobrawlanding"
 			},
 			"compressionCodec": "snappy"
