@@ -27,14 +27,6 @@
 								"Directory": "SILVER_OLIST",
 								"FileName": "olist_customers_dataset"
 							}
-						},
-						"linkedServiceParameters": {
-							"snkWriteParquet": {
-								"schemaLinkedService": {
-									"Directory": "SILVER_OLIST",
-									"FileName": "olist_customers_dataset"
-								}
-							}
 						}
 					},
 					"compute": {
