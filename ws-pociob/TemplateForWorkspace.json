@@ -5557,449 +5557,6 @@
 						"ActionType": "CREATE",
 						"OldEntity": null,
 						"NewEntity": {
-							"Name": "RAW_SalesForce",
-							"EntityType": "TABLE",
-							"Namespace": {
-								"DatabaseName": "Database1"
-							},
-							"Description": "",
-							"TableType": "EXTERNAL",
-							"Origin": {
-								"Type": "SPARK"
-							},
-							"StorageDescriptor": {
-								"Columns": [
-									{
-										"Name": "Id",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 8000,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										}
-									},
-									{
-										"Name": "IsDeleted",
-										"OriginDataTypeName": {
-											"TypeName": "boolean",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "boolean"
-											}
-										}
-									},
-									{
-										"Name": "Name",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 8000,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										}
-									},
-									{
-										"Name": "ParentId",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 8000,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										}
-									},
-									{
-										"Name": "Type",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 8000,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										}
-									},
-									{
-										"Name": "Status",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 8000,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										}
-									},
-									{
-										"Name": "StartDate",
-										"OriginDataTypeName": {
-											"TypeName": "timestamp",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
-												"HIVE_TYPE_STRING": "timestamp"
-											}
-										}
-									},
-									{
-										"Name": "EndDate",
-										"OriginDataTypeName": {
-											"TypeName": "timestamp",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
-												"HIVE_TYPE_STRING": "timestamp"
-											}
-										}
-									},
-									{
-										"Name": "ExpectedRevenue",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										}
-									},
-									{
-										"Name": "BudgetedCost",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										}
-									},
-									{
-										"Name": "ActualCost",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										}
-									},
-									{
-										"Name": "ExpectedResponse",
-										"OriginDataTypeName": {
-											"TypeName": "double",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "double"
-											}
-										}
-									},
-									{
-										"Name": "NumberSent",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										}
-									},
-									{
-										"Name": "IsActive",
-										"OriginDataTypeName": {
-											"TypeName": "boolean",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "boolean"
-											}
-										}
-									},
-									{
-										"Name": "Description",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 8000,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										}
-									},
-									{
-										"Name": "NumberOfLeads",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										}
-									},
-									{
-										"Name": "NumberOfConvertedLeads",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										}
-									},
-									{
-										"Name": "NumberOfContacts",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										}
-									},
-									{
-										"Name": "NumberOfResponses",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										}
-									},
-									{
-										"Name": "NumberOfOpportunities",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										}
-									},
-									{
-										"Name": "NumberOfWonOpportunities",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										}
-									},
-									{
-										"Name": "AmountAllOpportunities",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										}
-									},
-									{
-										"Name": "AmountWonOpportunities",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										}
-									},
-									{
-										"Name": "OwnerId",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 8000,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										}
-									},
-									{
-										"Name": "CreatedDate",
-										"OriginDataTypeName": {
-											"TypeName": "timestamp",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
-												"HIVE_TYPE_STRING": "timestamp"
-											}
-										}
-									},
-									{
-										"Name": "CreatedById",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 8000,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										}
-									},
-									{
-										"Name": "LastModifiedDate",
-										"OriginDataTypeName": {
-											"TypeName": "timestamp",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
-												"HIVE_TYPE_STRING": "timestamp"
-											}
-										}
-									},
-									{
-										"Name": "LastModifiedById",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 8000,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										}
-									},
-									{
-										"Name": "SystemModstamp",
-										"OriginDataTypeName": {
-											"TypeName": "timestamp",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
-												"HIVE_TYPE_STRING": "timestamp"
-											}
-										}
-									},
-									{
-										"Name": "LastActivityDate",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 8000,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										}
-									},
-									{
-										"Name": "LastViewedDate",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 8000,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										}
-									},
-									{
-										"Name": "LastReferencedDate",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 8000,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										}
-									},
-									{
-										"Name": "CampaignMemberRecordTypeId",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 8000,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										}
-									}
-								],
-								"Format": {
-									"InputFormat": "org.apache.hadoop.mapred.SequenceFileInputFormat",
-									"OutputFormat": "org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat",
-									"FormatType": "csv",
-									"SerializeLib": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
-									"Properties": {
-										"path": "abfss://pociobrawlanding@pocioblake.dfs.core.windows.net/SalesForce",
-										"delimiter": "|",
-										"firstRowAsHeader": "true",
-										"multiLine": "false",
-										"serialization.format": "1",
-										"FormatTypeSetToDatabaseDefault": false,
-										"header": "true"
-									}
-								},
-								"Source": {
-									"Provider": "ADLS",
-									"Location": "abfss://pociobrawlanding@pocioblake.dfs.core.windows.net/SalesForce",
-									"Properties": {
-										"LinkedServiceName": "ws-pociob-WorkspaceDefaultStorage",
-										"LocationSetToDatabaseDefault": false
-									}
-								},
-								"Properties": {
-									"textinputformat.record.delimiter": "|",
-									"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
-									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
-								},
-								"Compressed": false,
-								"IsStoredAsSubdirectories": false
-							},
-							"Properties": {
-								"Description": "",
-								"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
-								"PrimaryKeys": "",
-								"spark.sql.sources.provider": "csv"
-							},
-							"Retention": 0,
-							"Temporary": false,
-							"IsRewriteEnabled": false
-						},
-						"Source": {
-							"Type": "SPARK"
-						}
-					},
-					{
-						"ActionType": "CREATE",
-						"OldEntity": null,
-						"NewEntity": {
 							"Name": "olist_customers",
 							"EntityType": "TABLE",
 							"Namespace": {
@@ -6022,7 +5579,8 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										}
+										},
+										"DeltaFormatInvalidMessages": []
 									},
 									{
 										"Name": "customer_unique_id",
@@ -6034,7 +5592,8 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										}
+										},
+										"DeltaFormatInvalidMessages": []
 									},
 									{
 										"Name": "customer_zip_code_prefix",
@@ -6045,7 +5604,8 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "integer"
 											}
-										}
+										},
+										"DeltaFormatInvalidMessages": []
 									},
 									{
 										"Name": "customer_city",
@@ -6057,7 +5617,8 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										}
+										},
+										"DeltaFormatInvalidMessages": []
 									},
 									{
 										"Name": "customer_state",
@@ -6069,7 +5630,8 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										}
+										},
+										"DeltaFormatInvalidMessages": []
 									},
 									{
 										"Name": "_sourcefile",
@@ -6081,19 +5643,8 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										}
-									},
-									{
-										"Name": "_loadtime",
-										"OriginDataTypeName": {
-											"TypeName": "timestamp",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
-												"HIVE_TYPE_STRING": "timestamp"
-											}
-										}
+										},
+										"DeltaFormatInvalidMessages": []
 									}
 								],
 								"Format": {
@@ -6102,13 +5653,308 @@
 									"FormatType": "parquet",
 									"SerializeLib": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
 									"Properties": {
-										"path": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SQLOlist/olist_customers_dataset/CleanFile1.parquet",
+										"path": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_customers_dataset",
 										"FormatTypeSetToDatabaseDefault": false
 									}
 								},
 								"Source": {
 									"Provider": "ADLS",
-									"Location": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SQLOlist/olist_customers_dataset/CleanFile1.parquet",
+									"Location": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_customers_dataset",
+									"Properties": {
+										"LinkedServiceName": "ws-pociob-WorkspaceDefaultStorage",
+										"LocationSetToDatabaseDefault": false
+									}
+								},
+								"Properties": {
+									"textinputformat.record.delimiter": ",",
+									"compression": "",
+									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
+								},
+								"Compressed": false,
+								"IsStoredAsSubdirectories": false
+							},
+							"Properties": {
+								"Description": "",
+								"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
+								"PrimaryKeys": "",
+								"spark.sql.sources.provider": "parquet"
+							},
+							"Retention": 0,
+							"Temporary": false,
+							"IsRewriteEnabled": false
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "olist_orders",
+							"EntityType": "TABLE",
+							"Namespace": {
+								"DatabaseName": "Database1"
+							},
+							"Description": "",
+							"TableType": "EXTERNAL",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"StorageDescriptor": {
+								"Columns": [
+									{
+										"Name": "order_id",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "customer_id",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "order_status",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "order_purchase_timestamp",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "order_approved_at",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "order_delivered_carrier_date",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "order_delivered_customer_date",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "order_estimated_delivery_date",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "_sourcefile",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									}
+								],
+								"Format": {
+									"InputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
+									"OutputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
+									"FormatType": "parquet",
+									"SerializeLib": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
+									"Properties": {
+										"path": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_orders_dataset",
+										"FormatTypeSetToDatabaseDefault": false
+									}
+								},
+								"Source": {
+									"Provider": "ADLS",
+									"Location": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_orders_dataset",
+									"Properties": {
+										"LinkedServiceName": "ws-pociob-WorkspaceDefaultStorage",
+										"LocationSetToDatabaseDefault": false
+									}
+								},
+								"Properties": {
+									"textinputformat.record.delimiter": ",",
+									"compression": "",
+									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
+								},
+								"Compressed": false,
+								"IsStoredAsSubdirectories": false
+							},
+							"Properties": {
+								"Description": "",
+								"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
+								"PrimaryKeys": "",
+								"spark.sql.sources.provider": "parquet"
+							},
+							"Retention": 0,
+							"Temporary": false,
+							"IsRewriteEnabled": false
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "olist_sellers",
+							"EntityType": "TABLE",
+							"Namespace": {
+								"DatabaseName": "Database1"
+							},
+							"Description": "",
+							"TableType": "EXTERNAL",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"StorageDescriptor": {
+								"Columns": [
+									{
+										"Name": "seller_id",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "seller_zip_code_prefix",
+										"OriginDataTypeName": {
+											"TypeName": "integer",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "integer"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "seller_city",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "seller_state",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "_sourcefile",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									}
+								],
+								"Format": {
+									"InputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
+									"OutputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
+									"FormatType": "parquet",
+									"SerializeLib": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
+									"Properties": {
+										"path": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_sellers_dataset/olist_sellers_dataset_20230421034249.parquet",
+										"FormatTypeSetToDatabaseDefault": false
+									}
+								},
+								"Source": {
+									"Provider": "ADLS",
+									"Location": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_sellers_dataset/olist_sellers_dataset_20230421034249.parquet",
 									"Properties": {
 										"LinkedServiceName": "ws-pociob-WorkspaceDefaultStorage",
 										"LocationSetToDatabaseDefault": false
@@ -6137,6 +5983,26 @@
 						}
 					}
 				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 3')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT  *\nFROM    dbo.olist_sellers",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "Database1",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
 			},
 			"dependsOn": []
 		}
