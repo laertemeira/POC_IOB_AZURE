@@ -25,13 +25,6 @@
 									"value": "@pipeline().parameters.FileName",
 									"type": "Expression"
 								}
-							},
-							"snkWriteParquet": {
-								"Directory": "SILVER_OLIST",
-								"File": {
-									"value": "@pipeline().parameters.FileName",
-									"type": "Expression"
-								}
 							}
 						}
 					},
