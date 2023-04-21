@@ -61,12 +61,9 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "SqlPoolSource",
-									"sqlReaderQuery": {
-										"value": "@concat('select * from dbo.', item().name)",
-										"type": "Expression"
-									},
-									"queryTimeout": "02:00:00"
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								},
 								"sink": {
 									"type": "ParquetSink",
@@ -77,8 +74,22 @@
 										"type": "ParquetWriteSettings"
 									}
 								},
-								"enableStaging": false
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
 							},
+							"inputs": [
+								{
+									"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
+									"type": "DatasetReference"
+								}
+							],
 							"outputs": [
 								{
 									"referenceName": "ds_01_BRONZE_Ingest_Olist_Tables",
