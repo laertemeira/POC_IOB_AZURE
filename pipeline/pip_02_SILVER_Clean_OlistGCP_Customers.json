@@ -21,11 +21,17 @@
 						"datasetParameters": {
 							"srcOlistParquet": {
 								"Directory": "BRONZE_OLIST",
-								"File": "olist_customers_dataset"
+								"File": {
+									"value": "@pipeline().parameters.FileName",
+									"type": "Expression"
+								}
 							},
 							"snkWriteParquet": {
 								"Directory": "SILVER_OLIST",
-								"File": "olist_customers_dataset"
+								"File": {
+									"value": "@pipeline().parameters.FileName",
+									"type": "Expression"
+								}
 							}
 						}
 					},
