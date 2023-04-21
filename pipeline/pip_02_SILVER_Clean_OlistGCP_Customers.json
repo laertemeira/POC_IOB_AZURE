@@ -44,7 +44,10 @@
 									"value": "@pipeline().parameters.TargetDirectory",
 									"type": "Expression"
 								},
-								"File": "@pipeline().parameters.FileName"
+								"File": {
+									"value": "@pipeline().parameters.FileName",
+									"type": "Expression"
+								}
 							}
 						}
 					},
