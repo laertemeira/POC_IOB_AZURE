@@ -87,7 +87,13 @@
 							"inputs": [
 								{
 									"referenceName": "ds_01_BRONZE_Extract_OlistGCP",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"cw_table": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"outputs": [
