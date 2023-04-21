@@ -45,7 +45,8 @@
 		],
 		"parameters": {
 			"FileName": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "olist_customers_dataset"
 			}
 		},
 		"folder": {
