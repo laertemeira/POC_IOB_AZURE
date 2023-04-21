@@ -40,7 +40,7 @@
 				"     ignoreNoFilesFound: true,",
 				"     rowUrlColumn: '_sourcefile',",
 				"     format: 'parquet') ~> srcOlistParquet",
-				"srcOlistParquet derive(each(match(type==\"string\"), $$ = lower(trim($$))),",
+				"srcOlistParquet derive(each(match(type==\"string\" && name!=\"_sourcefile\"), $$ = lower(trim($$))),",
 				"          {_loadtime} = currentTimestamp()) ~> dcTrimLowerStrings",
 				"dcTrimLowerStrings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
