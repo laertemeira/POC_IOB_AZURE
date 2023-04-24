@@ -407,6 +407,121 @@
 				"typeProperties": {
 					"waitTimeInSeconds": 1
 				}
+			},
+			{
+				"name": "Fail1",
+				"type": "Fail",
+				"dependsOn": [
+					{
+						"activity": "Clean Customers",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Clean Orders",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Clean Order Items",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Clean Reviews",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Clean Geo Location",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Clean Payments",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Clean Category Name Translations",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Clean Products",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Clean Sellers",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Ingest Customer",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Ingest Orders",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Ingest Order Items",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Ingest Reviews",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Ingest Geo Location",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Ingest Payments",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Ingest Category Name Translations",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Ingest Products",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Ingest Sellers",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": []
 			}
 		],
 		"folder": {
