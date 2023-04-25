@@ -1,7 +1,7 @@
 {
-	"name": "olist_sellers",
+	"name": "olist_geolocation",
 	"properties": {
-		"Name": "olist_sellers",
+		"Name": "olist_geolocation",
 		"EntityType": "TABLE",
 		"TableType": "EXTERNAL",
 		"Namespace": {
@@ -13,22 +13,7 @@
 			"Distribution": null,
 			"Columns": [
 				{
-					"Name": "seller_id",
-					"Description": null,
-					"OriginDataTypeName": {
-						"TypeName": "string",
-						"IsComplexType": false,
-						"IsNullable": true,
-						"Length": 8000,
-						"Precision": 0,
-						"Scale": 0,
-						"Properties": {
-							"HIVE_TYPE_STRING": "string"
-						}
-					}
-				},
-				{
-					"Name": "seller_zip_code_prefix",
+					"Name": "geolocation_zip_code_prefix",
 					"Description": null,
 					"OriginDataTypeName": {
 						"TypeName": "integer",
@@ -43,7 +28,37 @@
 					}
 				},
 				{
-					"Name": "seller_city",
+					"Name": "geolocation_lat",
+					"Description": null,
+					"OriginDataTypeName": {
+						"TypeName": "float",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Length": 0,
+						"Precision": 0,
+						"Scale": 0,
+						"Properties": {
+							"HIVE_TYPE_STRING": "float"
+						}
+					}
+				},
+				{
+					"Name": "geolocation_lng",
+					"Description": null,
+					"OriginDataTypeName": {
+						"TypeName": "float",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Length": 0,
+						"Precision": 0,
+						"Scale": 0,
+						"Properties": {
+							"HIVE_TYPE_STRING": "float"
+						}
+					}
+				},
+				{
+					"Name": "geolocation_city",
 					"Description": null,
 					"OriginDataTypeName": {
 						"TypeName": "string",
@@ -58,7 +73,7 @@
 					}
 				},
 				{
-					"Name": "seller_state",
+					"Name": "geolocation_state",
 					"Description": null,
 					"OriginDataTypeName": {
 						"TypeName": "string",
@@ -88,20 +103,20 @@
 					}
 				}
 			],
-			"ColumnSetEntityName": "787d0fc6-9bec-4627-a143-7fe79eddb783",
+			"ColumnSetEntityName": "a175a74e-9bbe-468d-a9f0-01636f2bb7f5",
 			"Format": {
 				"InputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
 				"OutputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
 				"FormatType": "parquet",
 				"SerializeLib": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
 				"Properties": {
-					"path": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_sellers_dataset/olist_sellers_dataset_20230421034249.parquet",
+					"path": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_geolocation_dataset",
 					"FormatTypeSetToDatabaseDefault": false
 				}
 			},
 			"Source": {
 				"Provider": "ADLS",
-				"Location": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_sellers_dataset/olist_sellers_dataset_20230421034249.parquet",
+				"Location": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_geolocation_dataset",
 				"Properties": {
 					"LinkedServiceName": "ws-pociob-WorkspaceDefaultStorage",
 					"LocationSetToDatabaseDefault": false
@@ -109,7 +124,7 @@
 			},
 			"Properties": {
 				"textinputformat.record.delimiter": ",",
-				"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
+				"compression": "",
 				"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
 			},
 			"Compressed": false,
@@ -136,10 +151,10 @@
 			"PrimaryKeys": "",
 			"spark.sql.sources.provider": "parquet",
 			"spark.sql.sources.schema.numParts": "1",
-			"spark.sql.sources.schema.part.0": "{\"type\":\"struct\",\"fields\":[{\"name\":\"seller_id\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"seller_zip_code_prefix\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"seller_city\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"seller_state\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"_sourcefile\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}}]}"
+			"spark.sql.sources.schema.part.0": "{\"type\":\"struct\",\"fields\":[{\"name\":\"geolocation_zip_code_prefix\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"geolocation_lat\",\"type\":\"float\",\"nullable\":true,\"metadata\":{}},{\"name\":\"geolocation_lng\",\"type\":\"float\",\"nullable\":true,\"metadata\":{}},{\"name\":\"geolocation_city\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"geolocation_state\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"_sourcefile\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}}]}"
 		},
-		"ObjectVersion": 2,
-		"ObjectId": "58ae0bbb-814b-42a6-94f2-0990491e81d1",
+		"ObjectVersion": 1,
+		"ObjectId": "a23682bb-e359-4099-90cb-b8aa2df83c3c",
 		"Description": ""
 	},
 	"type": "TABLE"

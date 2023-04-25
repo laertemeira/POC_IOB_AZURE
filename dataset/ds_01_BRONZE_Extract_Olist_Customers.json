@@ -39,5 +39,6 @@
 		"typeProperties": {
 			"tableName": "dbo.olist_customers_dataset"
 		}
-	}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
 }

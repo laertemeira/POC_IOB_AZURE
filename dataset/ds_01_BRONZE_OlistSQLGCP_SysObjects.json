@@ -15,5 +15,6 @@
 			"schema": "sys",
 			"table": "sysobjects"
 		}
-	}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
 }

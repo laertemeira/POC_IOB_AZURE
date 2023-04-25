@@ -1,7 +1,7 @@
 {
-	"name": "olist_sellers",
+	"name": "olist_order_payments",
 	"properties": {
-		"Name": "olist_sellers",
+		"Name": "olist_order_payments",
 		"EntityType": "TABLE",
 		"TableType": "EXTERNAL",
 		"Namespace": {
@@ -13,7 +13,7 @@
 			"Distribution": null,
 			"Columns": [
 				{
-					"Name": "seller_id",
+					"Name": "order_id",
 					"Description": null,
 					"OriginDataTypeName": {
 						"TypeName": "string",
@@ -28,7 +28,7 @@
 					}
 				},
 				{
-					"Name": "seller_zip_code_prefix",
+					"Name": "payment_sequential",
 					"Description": null,
 					"OriginDataTypeName": {
 						"TypeName": "integer",
@@ -43,7 +43,7 @@
 					}
 				},
 				{
-					"Name": "seller_city",
+					"Name": "payment_type",
 					"Description": null,
 					"OriginDataTypeName": {
 						"TypeName": "string",
@@ -58,17 +58,32 @@
 					}
 				},
 				{
-					"Name": "seller_state",
+					"Name": "payment_installments",
 					"Description": null,
 					"OriginDataTypeName": {
-						"TypeName": "string",
+						"TypeName": "integer",
 						"IsComplexType": false,
 						"IsNullable": true,
-						"Length": 8000,
+						"Length": 0,
 						"Precision": 0,
 						"Scale": 0,
 						"Properties": {
-							"HIVE_TYPE_STRING": "string"
+							"HIVE_TYPE_STRING": "integer"
+						}
+					}
+				},
+				{
+					"Name": "payment_value",
+					"Description": null,
+					"OriginDataTypeName": {
+						"TypeName": "float",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Length": 0,
+						"Precision": 0,
+						"Scale": 0,
+						"Properties": {
+							"HIVE_TYPE_STRING": "float"
 						}
 					}
 				},
@@ -88,20 +103,20 @@
 					}
 				}
 			],
-			"ColumnSetEntityName": "787d0fc6-9bec-4627-a143-7fe79eddb783",
+			"ColumnSetEntityName": "cbb88824-5fa6-4401-83f0-def98ddce342",
 			"Format": {
 				"InputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
 				"OutputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
 				"FormatType": "parquet",
 				"SerializeLib": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
 				"Properties": {
-					"path": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_sellers_dataset/olist_sellers_dataset_20230421034249.parquet",
+					"path": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_order_payments_dataset",
 					"FormatTypeSetToDatabaseDefault": false
 				}
 			},
 			"Source": {
 				"Provider": "ADLS",
-				"Location": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_sellers_dataset/olist_sellers_dataset_20230421034249.parquet",
+				"Location": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_order_payments_dataset",
 				"Properties": {
 					"LinkedServiceName": "ws-pociob-WorkspaceDefaultStorage",
 					"LocationSetToDatabaseDefault": false
@@ -109,7 +124,7 @@
 			},
 			"Properties": {
 				"textinputformat.record.delimiter": ",",
-				"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
+				"compression": "",
 				"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
 			},
 			"Compressed": false,
@@ -136,10 +151,10 @@
 			"PrimaryKeys": "",
 			"spark.sql.sources.provider": "parquet",
 			"spark.sql.sources.schema.numParts": "1",
-			"spark.sql.sources.schema.part.0": "{\"type\":\"struct\",\"fields\":[{\"name\":\"seller_id\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"seller_zip_code_prefix\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"seller_city\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"seller_state\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"_sourcefile\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}}]}"
+			"spark.sql.sources.schema.part.0": "{\"type\":\"struct\",\"fields\":[{\"name\":\"order_id\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"payment_sequential\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"payment_type\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"payment_installments\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"payment_value\",\"type\":\"float\",\"nullable\":true,\"metadata\":{}},{\"name\":\"_sourcefile\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}}]}"
 		},
-		"ObjectVersion": 2,
-		"ObjectId": "58ae0bbb-814b-42a6-94f2-0990491e81d1",
+		"ObjectVersion": 1,
+		"ObjectId": "2cad2bc6-8698-4569-bdee-abc400c41285",
 		"Description": ""
 	},
 	"type": "TABLE"

@@ -176,6 +176,8 @@
 		"folder": {
 			"name": "01_BRONZE_OLIST"
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2023-04-21T03:42:56Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
 }

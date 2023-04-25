@@ -75,6 +75,8 @@
 		"folder": {
 			"name": "02_SILVER_OLIST"
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2023-04-21T03:44:21Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
 }

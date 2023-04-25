@@ -176,6 +176,11 @@
 				]
 			}
 		},
-		"annotations": []
-	}
+		"folder": {
+			"name": "OUTROS"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-04-24T19:57:30Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
 }

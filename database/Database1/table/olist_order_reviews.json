@@ -1,7 +1,7 @@
 {
-	"name": "olist_sellers",
+	"name": "olist_order_reviews",
 	"properties": {
-		"Name": "olist_sellers",
+		"Name": "olist_order_reviews",
 		"EntityType": "TABLE",
 		"TableType": "EXTERNAL",
 		"Namespace": {
@@ -13,7 +13,7 @@
 			"Distribution": null,
 			"Columns": [
 				{
-					"Name": "seller_id",
+					"Name": "review_id",
 					"Description": null,
 					"OriginDataTypeName": {
 						"TypeName": "string",
@@ -28,7 +28,22 @@
 					}
 				},
 				{
-					"Name": "seller_zip_code_prefix",
+					"Name": "order_id",
+					"Description": null,
+					"OriginDataTypeName": {
+						"TypeName": "string",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Length": 8000,
+						"Precision": 0,
+						"Scale": 0,
+						"Properties": {
+							"HIVE_TYPE_STRING": "string"
+						}
+					}
+				},
+				{
+					"Name": "review_score",
 					"Description": null,
 					"OriginDataTypeName": {
 						"TypeName": "integer",
@@ -43,7 +58,7 @@
 					}
 				},
 				{
-					"Name": "seller_city",
+					"Name": "review_comment_title",
 					"Description": null,
 					"OriginDataTypeName": {
 						"TypeName": "string",
@@ -58,7 +73,37 @@
 					}
 				},
 				{
-					"Name": "seller_state",
+					"Name": "review_comment_message",
+					"Description": null,
+					"OriginDataTypeName": {
+						"TypeName": "string",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Length": 8000,
+						"Precision": 0,
+						"Scale": 0,
+						"Properties": {
+							"HIVE_TYPE_STRING": "string"
+						}
+					}
+				},
+				{
+					"Name": "review_creation_date",
+					"Description": null,
+					"OriginDataTypeName": {
+						"TypeName": "string",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Length": 8000,
+						"Precision": 0,
+						"Scale": 0,
+						"Properties": {
+							"HIVE_TYPE_STRING": "string"
+						}
+					}
+				},
+				{
+					"Name": "review_answer_timestamp",
 					"Description": null,
 					"OriginDataTypeName": {
 						"TypeName": "string",
@@ -88,20 +133,20 @@
 					}
 				}
 			],
-			"ColumnSetEntityName": "787d0fc6-9bec-4627-a143-7fe79eddb783",
+			"ColumnSetEntityName": "512720b8-9b51-4691-b5a3-3a3046ace7f0",
 			"Format": {
 				"InputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
 				"OutputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
 				"FormatType": "parquet",
 				"SerializeLib": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
 				"Properties": {
-					"path": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_sellers_dataset/olist_sellers_dataset_20230421034249.parquet",
+					"path": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_order_reviews_dataset",
 					"FormatTypeSetToDatabaseDefault": false
 				}
 			},
 			"Source": {
 				"Provider": "ADLS",
-				"Location": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_sellers_dataset/olist_sellers_dataset_20230421034249.parquet",
+				"Location": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_order_reviews_dataset",
 				"Properties": {
 					"LinkedServiceName": "ws-pociob-WorkspaceDefaultStorage",
 					"LocationSetToDatabaseDefault": false
@@ -109,7 +154,7 @@
 			},
 			"Properties": {
 				"textinputformat.record.delimiter": ",",
-				"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
+				"compression": "",
 				"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
 			},
 			"Compressed": false,
@@ -136,10 +181,10 @@
 			"PrimaryKeys": "",
 			"spark.sql.sources.provider": "parquet",
 			"spark.sql.sources.schema.numParts": "1",
-			"spark.sql.sources.schema.part.0": "{\"type\":\"struct\",\"fields\":[{\"name\":\"seller_id\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"seller_zip_code_prefix\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"seller_city\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"seller_state\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"_sourcefile\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}}]}"
+			"spark.sql.sources.schema.part.0": "{\"type\":\"struct\",\"fields\":[{\"name\":\"review_id\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"order_id\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"review_score\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"review_comment_title\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"review_comment_message\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"review_creation_date\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"review_answer_timestamp\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"_sourcefile\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}}]}"
 		},
-		"ObjectVersion": 2,
-		"ObjectId": "58ae0bbb-814b-42a6-94f2-0990491e81d1",
+		"ObjectVersion": 1,
+		"ObjectId": "5ec49ec2-5c3b-405d-bac8-396bc61dcc55",
 		"Description": ""
 	},
 	"type": "TABLE"

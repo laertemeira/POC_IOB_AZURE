@@ -1,7 +1,7 @@
 {
-	"name": "olist_customers",
+	"name": "olist_products",
 	"properties": {
-		"Name": "olist_customers",
+		"Name": "olist_products",
 		"EntityType": "TABLE",
 		"TableType": "EXTERNAL",
 		"Namespace": {
@@ -13,7 +13,7 @@
 			"Distribution": null,
 			"Columns": [
 				{
-					"Name": "customer_id",
+					"Name": "product_id",
 					"Description": null,
 					"OriginDataTypeName": {
 						"TypeName": "string",
@@ -28,7 +28,7 @@
 					}
 				},
 				{
-					"Name": "customer_unique_id",
+					"Name": "product_category_name",
 					"Description": null,
 					"OriginDataTypeName": {
 						"TypeName": "string",
@@ -43,7 +43,7 @@
 					}
 				},
 				{
-					"Name": "customer_zip_code_prefix",
+					"Name": "product_name_lenght",
 					"Description": null,
 					"OriginDataTypeName": {
 						"TypeName": "integer",
@@ -58,32 +58,92 @@
 					}
 				},
 				{
-					"Name": "customer_city",
+					"Name": "product_description_lenght",
 					"Description": null,
 					"OriginDataTypeName": {
-						"TypeName": "string",
+						"TypeName": "integer",
 						"IsComplexType": false,
 						"IsNullable": true,
-						"Length": 8000,
+						"Length": 0,
 						"Precision": 0,
 						"Scale": 0,
 						"Properties": {
-							"HIVE_TYPE_STRING": "string"
+							"HIVE_TYPE_STRING": "integer"
 						}
 					}
 				},
 				{
-					"Name": "customer_state",
+					"Name": "product_photos_qty",
 					"Description": null,
 					"OriginDataTypeName": {
-						"TypeName": "string",
+						"TypeName": "integer",
 						"IsComplexType": false,
 						"IsNullable": true,
-						"Length": 8000,
+						"Length": 0,
 						"Precision": 0,
 						"Scale": 0,
 						"Properties": {
-							"HIVE_TYPE_STRING": "string"
+							"HIVE_TYPE_STRING": "integer"
+						}
+					}
+				},
+				{
+					"Name": "product_weight_g",
+					"Description": null,
+					"OriginDataTypeName": {
+						"TypeName": "integer",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Length": 0,
+						"Precision": 0,
+						"Scale": 0,
+						"Properties": {
+							"HIVE_TYPE_STRING": "integer"
+						}
+					}
+				},
+				{
+					"Name": "product_length_cm",
+					"Description": null,
+					"OriginDataTypeName": {
+						"TypeName": "integer",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Length": 0,
+						"Precision": 0,
+						"Scale": 0,
+						"Properties": {
+							"HIVE_TYPE_STRING": "integer"
+						}
+					}
+				},
+				{
+					"Name": "product_height_cm",
+					"Description": null,
+					"OriginDataTypeName": {
+						"TypeName": "integer",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Length": 0,
+						"Precision": 0,
+						"Scale": 0,
+						"Properties": {
+							"HIVE_TYPE_STRING": "integer"
+						}
+					}
+				},
+				{
+					"Name": "product_width_cm",
+					"Description": null,
+					"OriginDataTypeName": {
+						"TypeName": "integer",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Length": 0,
+						"Precision": 0,
+						"Scale": 0,
+						"Properties": {
+							"HIVE_TYPE_STRING": "integer"
 						}
 					}
 				},
@@ -103,20 +163,20 @@
 					}
 				}
 			],
-			"ColumnSetEntityName": "1babc960-0029-45dc-90e6-8c1ce337e198",
+			"ColumnSetEntityName": "f98325e8-7823-4d12-963e-3664786c203c",
 			"Format": {
 				"InputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
 				"OutputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
 				"FormatType": "parquet",
 				"SerializeLib": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
 				"Properties": {
-					"path": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_customers_dataset",
+					"path": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_products_dataset",
 					"FormatTypeSetToDatabaseDefault": false
 				}
 			},
 			"Source": {
 				"Provider": "ADLS",
-				"Location": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_customers_dataset",
+				"Location": "abfss://pociobcleansed@pocioblake.dfs.core.windows.net/SILVER_OLIST/olist_products_dataset",
 				"Properties": {
 					"LinkedServiceName": "ws-pociob-WorkspaceDefaultStorage",
 					"LocationSetToDatabaseDefault": false
@@ -124,7 +184,7 @@
 			},
 			"Properties": {
 				"textinputformat.record.delimiter": ",",
-				"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
+				"compression": "",
 				"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
 			},
 			"Compressed": false,
@@ -151,10 +211,10 @@
 			"PrimaryKeys": "",
 			"spark.sql.sources.provider": "parquet",
 			"spark.sql.sources.schema.numParts": "1",
-			"spark.sql.sources.schema.part.0": "{\"type\":\"struct\",\"fields\":[{\"name\":\"customer_id\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"customer_unique_id\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"customer_zip_code_prefix\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"customer_city\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"customer_state\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"_sourcefile\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}}]}"
+			"spark.sql.sources.schema.part.0": "{\"type\":\"struct\",\"fields\":[{\"name\":\"product_id\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"product_category_name\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"product_name_lenght\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"product_description_lenght\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"product_photos_qty\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"product_weight_g\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"product_length_cm\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"product_height_cm\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"product_width_cm\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"_sourcefile\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}}]}"
 		},
-		"ObjectVersion": 3,
-		"ObjectId": "f22ea46f-27ec-4b0d-bf27-2eb97dcfbef7",
+		"ObjectVersion": 1,
+		"ObjectId": "67580954-e99b-4ac9-928a-32ed48867942",
 		"Description": ""
 	},
 	"type": "TABLE"

@@ -1168,6 +1168,8 @@
 		"folder": {
 			"name": "OUTROS"
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2023-04-21T03:43:33Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
 }

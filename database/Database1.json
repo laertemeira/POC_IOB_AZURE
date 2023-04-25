@@ -16,7 +16,10 @@
 				"FormatType": "csv",
 				"LinkedServiceName": "ws-pociob-WorkspaceDefaultStorage"
 			}
-		}
+		},
+		"PublishStatus": "PUBLISHED",
+		"ObjectVersion": 9,
+		"ObjectId": "3df30b5f-95be-440f-9edc-20f327a3eaaf"
 	},
 	"type": "DATABASE"
 }
